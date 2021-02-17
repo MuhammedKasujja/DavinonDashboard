@@ -11,10 +11,11 @@ import IconPreson from '@material-ui/icons/Person'
 import IconStock from '@material-ui/icons/LocalShipping'
 import IconLocation from '@material-ui/icons/LocationOn'
 import IconDrivers from "@material-ui/icons/DriveEta"
+import WalletIcon from "@material-ui/icons/Payment"
 import IconTrips from "@material-ui/icons/TabRounded"
 import SettingIcon from "@material-ui/icons/Settings"
-import ReportIcon from "@material-ui/icons/Report"
-
+import ReviewIcon from "@material-ui/icons/Report"
+import ReportIcon from "@material-ui/icons/StayCurrentPortraitSharp"
 
 import { Theme } from '_theme'
 import SidebarNavItems from './SidebarNavItems'
@@ -77,19 +78,19 @@ const SidebarNav = (props: SidebarNavProps) => {
       Icon: IconPeople,
     },
     {
+      name: 'Payments',
+      link: '/admin/payments',
+      Icon: WalletIcon,
+    },
+    {
+      name: 'Trip Reviews',
+      link: '/admin/trip-reviews',
+      Icon: ReviewIcon,
+    },
+    {
       name: 'Cars',
       link: '/admin/cars',
       Icon: IconStock,
-    },
-    {
-      name: 'Add Cars',
-      link: '/admin/cars/new',
-      Icon: IconLocation,
-    },
-    {
-      name: 'Settings',
-      link: '/admin/settings',
-      Icon: SettingIcon,
     },
     {
       name: 'Reports',
@@ -97,10 +98,11 @@ const SidebarNav = (props: SidebarNavProps) => {
       Icon: ReportIcon,
     },
     {
-      name: 'Trip Reviews',
-      link: '/admin/trip-reviews',
-      Icon: ReportIcon,
+      name: 'Settings',
+      link: '/admin/settings',
+      Icon: SettingIcon,
     },
+
 
   ]
 
@@ -163,7 +165,7 @@ const SidebarNav = (props: SidebarNavProps) => {
             Settings
           </ListSubheader>
         )} */}
-        <SidebarNavItems isCollapsed={isCollapsed} items={itemsCoreModules} />
+        {/* <SidebarNavItems isCollapsed={isCollapsed} items={itemsCoreModules} /> */}
       </List>
 
       {/* <List className={classes.navList} disablePadding>

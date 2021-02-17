@@ -8,9 +8,11 @@ import {
     FETCH_PAYMENTS_NOTIFICATION
 } from "./types"
 const url = process.env.REACT_APP_BASE_URL
+const loginDate = localStorage.getItem('loginDate')
 
 export const fetchTripNotification = () => async (dispatch: Dispatch<NotificationActionTypes>) => {
-    const eventStream = new EventSource(`${url}/trips/stream/`)
+    
+    const eventStream = new EventSource(`${url}/trips/stream/${loginDate}`)
     eventStream.addEventListener("tripStateAdded", ((event: MessageEvent) => {
         const data = JSON.parse(event.data);
         // console.log(data);
@@ -48,7 +50,8 @@ export const fetchActiveDriversNotification = () => async (dispatch: Dispatch<No
 }
 
 export const fetchNewPaymentsNotification = () => async (dispatch: Dispatch<NotificationActionTypes>) => {
-    const eventStream = new EventSource(`${url}/payments/stream`)
+    const loginDate = '2021-01-11T20:27:34.130908'
+    const eventStream = new EventSource(`${url}/payments/stream/${loginDate}`)
     eventStream.addEventListener("NewPayment", ((event: MessageEvent) => {
         const data = JSON.parse(event.data);
         console.log({ 'Payments': data.payments });

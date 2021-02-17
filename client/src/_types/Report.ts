@@ -1,8 +1,11 @@
 export const SAVE_REPORT = "SAVE_REPORT"
 export const FETCH_TRIPS_PAYMENTS = "FETCH_TRIPS_PAYMENTS"
+export const FETCH_GRAND_PAYMENTS = "FETCH_GRAND_PAYMENTS"
+
 
 export interface ReportsState {
     tripPayments: TripPayment[]
+    totalPayments:number
 }
 
 export interface SaveReportAction {
@@ -15,7 +18,12 @@ export interface FetchTripsPaymentsAction {
     payload: TripPayment[]
 }
 
-export type ReportsActionTypes = SaveReportAction | FetchTripsPaymentsAction
+export interface FetchGrandPaymentsAction {
+    type: typeof FETCH_GRAND_PAYMENTS
+    payload: number
+}
+
+export type ReportsActionTypes = SaveReportAction | FetchTripsPaymentsAction | FetchGrandPaymentsAction
 
 export interface TripPayment {
     id: string

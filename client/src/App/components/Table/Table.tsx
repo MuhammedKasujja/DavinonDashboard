@@ -29,7 +29,7 @@ import {
 
 import { camelToWords, useDebounce, useLocalStorage } from 'utils'
 import { FilterChipBar } from './FilterChipBar'
-import { fuzzyTextFilter, numericTextFilter , GlobalFilter} from './filters'
+import { fuzzyTextFilter, numericTextFilter, GlobalFilter } from './filters'
 import { ResizeHandle } from './ResizeHandle'
 import { TablePagination } from './TablePagination'
 import { HeaderCheckbox, RowCheckbox, useStyles } from './TableStyles'
@@ -42,7 +42,7 @@ export interface Table<T extends object = {}> extends TableOptions<T> {
   onDelete?: (instance: TableInstance<T>) => MouseEventHandler
   onEdit?: (instance: TableInstance<T>) => MouseEventHandler
   onClick?: (row: Row<T>) => void,
-  handleOnAdd?:MouseEventHandler
+  handleOnAdd?: MouseEventHandler
 }
 
 const DefaultHeader: React.FC<HeaderProps<any>> = ({ column }) => (
@@ -171,7 +171,7 @@ export function Table<T extends object>(props: PropsWithChildren<Table<T>>): Rea
   //     console.log('I live programming')
   // }
 
-  const { getTableProps, headerGroups, getTableBodyProps, page, prepareRow, state } = instance
+  const { getTableProps, headerGroups, getTableBodyProps, page, prepareRow, state, getResolvedState } = instance
   const debouncedState = useDebounce(state, 500)
 
   useEffect(() => {
@@ -192,11 +192,21 @@ export function Table<T extends object>(props: PropsWithChildren<Table<T>>): Rea
   // const _onAgg:TableMouseEventHandler =()=>{
   //   return 
   // }
+  // const downloadToCSV = (evvent: any) => {
+  //   // instance.rows.
+  //   const records = instance.rows;
+  //   var data_to_download = []
+  //   for (var index = 0; index < records.length; index++) { 
+  //      data_to_download.push(records[index].original)
+  //   }
+  //   console.log({ DataRecords: data_to_download })
+  // }
 
   return (
     <>
       {/* <GlobalFilter<T> instance={instance}/> */}
-      <TableToolbar instance={instance} {...{ onAdd, onDelete, onEdit,handleOnAdd }} />
+    
+      <TableToolbar instance={instance} {...{ onAdd, onDelete, onEdit, handleOnAdd }} />
       <FilterChipBar<T> instance={instance} />
       <div className={classes.tableTable} {...getTableProps()}>
         <div>

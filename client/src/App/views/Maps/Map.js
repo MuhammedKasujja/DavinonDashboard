@@ -9,8 +9,6 @@ import {
 import { compose } from "recompose";
 import {fetchTrips} from "../../../_store/trips/actions"
 import {connect} from "react-redux"
-const mapStyles = require('./GoogleMapStyles.json')
-
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const MapWithMarkers = compose(withScriptjs,
@@ -91,10 +89,10 @@ const MapWithMarkers = compose(withScriptjs,
           ]
         }}
       >
-        {props.markers.map(trip => {
-          const onClick = props.onClick.bind(this, trip)
+        {props.markers.map(driver => {
+          const onClick = props.onClick.bind(this, driver)
           const tripStatus = () => {
-            var status = trip.status;
+            var status = driver.status;
             if (status === 1) {
               return 'Open'
             } else if (status === 3) {
@@ -111,21 +109,21 @@ const MapWithMarkers = compose(withScriptjs,
             }
           }
           return <Marker
-            key={trip.id}
+            key={driver.id}
             onClick={onClick}
-            position={{ lat: trip.originLatitude, lng: trip.originLongitude }} >
+            position={{ lat: driver.originLatitude, lng: driver.originLongitude }} >
             <InfoWindow>
               <div>
-                {trip.originAddress}
-                <div>{trip.distance} {tripStatus()}</div>
+                {driver.originAddress}
+                <div>{driver.distance} {tripStatus()}</div>
               </div>
 
             </InfoWindow>
-            {props.selectedMarker === trip &&
+            {props.selectedMarker === driver &&
               <InfoWindow>
                 <div>
-                  {trip.originAddress}
-                  <div>{trip.distance} {tripStatus()}</div>
+                  {driver.originAddress}
+                  <div>{driver.distance} {tripStatus()}</div>
                 </div>
               </InfoWindow>}
           </Marker>
@@ -135,11 +133,11 @@ const MapWithMarkers = compose(withScriptjs,
   }
   );
 
-class TripsMap extends React.Component {
+class DriversMap extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      trips: [],
+        drivers: [],
       selectedMarker: false
     }
   }
@@ -161,7 +159,7 @@ class TripsMap extends React.Component {
     return (
       <MapWithMarkers
         selectedMarker={this.state.selectedMarker}
-        markers={this.props.trips}
+        markers={this.props.drivers}
         onClick={this.handleMarkerClick}
         googleMapURL={url}
         loadingElement={<div style={{ height: `100%` }} />}
@@ -174,7 +172,7 @@ class TripsMap extends React.Component {
 
 const mapStateToProps = (state) =>{
   return {
-     trips : state.trips.trips
+    driver : state.drivers.drivers
   };
 }
-export default connect(mapStateToProps)(TripsMap);
+export default connect(mapStateToProps)(DriversMap);

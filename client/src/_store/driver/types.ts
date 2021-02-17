@@ -1,4 +1,5 @@
 import { Photo } from "_store/photo";
+import { Position } from "_store/trips/types";
 import { Vehicle } from "_store/truck/types";
 export const FETCH_DRIVERS = 'FETCH_DRIVERS'
 export const ADD_LOCAL_DRIVER = 'ADD_LOCAL_DRIVER'
@@ -7,8 +8,8 @@ export const FETCH_ALL_DRIVERS = 'FETCH_ALL_DRIVERS'
 
 export interface Driver extends Photo {
     id?: string,
-    firstname: string,
-    lastname: string,
+    firstname?: string,
+    lastname?: string,
     name: string,
     email: string,
     telephone?: string,
@@ -18,8 +19,13 @@ export interface Driver extends Photo {
     isOnline: boolean
     trucks:Vehicle[]
     city:string
+    oneSignalPlayerID:string
     nin:string
-    dob:string
+    birthday?:string
+    charisma:number
+    location?:Position
+    available?:boolean
+    createdOn?:number
 }
 
 export interface DriverState {

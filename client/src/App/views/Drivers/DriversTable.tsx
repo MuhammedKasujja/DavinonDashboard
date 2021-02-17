@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux"
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import EditIcon from "@material-ui/icons/Edit"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { addData } from 'App/redux/actions/carsActions'
-import { GetDrivers, fetchAllDrivers, AddLocalDriver } from "../../../_store/driver/actions"
+import { GetDrivers, AddLocalDriver } from "../../../_store/driver/actions"
 import Chip from "@material-ui/core/Chip"
 import { Driver } from '_store/driver/types'
 import { RootStore } from '_store/store'
@@ -31,6 +31,7 @@ const getAge = (dateOfBirth: string) => {
 
 const DriversTable: React.FC<any> = () => {
   const dispatch = useDispatch();
+  const history = useHistory()
   const driversState = useSelector(
     (state: RootStore) => state.drivers,
   )
@@ -92,8 +93,8 @@ const DriversTable: React.FC<any> = () => {
           //   name: 'status',
           // },
           {
-            Header: 'Age',
-            accessor: `id`,
+            Header: 'Rating',
+            accessor: `charisma`,
           },
           {
             Header: 'Active',
@@ -144,7 +145,8 @@ const DriversTable: React.FC<any> = () => {
 
   const handleAddDriver = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>) => {
-      console.log({'event':event})
+      console.log({'event':event}) 
+      history.push('/admin/drivers/new') 
     },
     []
   )

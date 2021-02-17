@@ -13,7 +13,8 @@ app.use(logger('dev'))
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser())
-
+// Define the static file path
+app.use(express.static(__dirname+'/Uploads'));
 app.use('/api', routes);
 
 // catch 404 and forward to error handler

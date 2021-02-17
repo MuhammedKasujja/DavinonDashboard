@@ -1,6 +1,6 @@
 import React from "react";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, StyleRules } from "@material-ui/core/styles";
 // core components
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
@@ -15,18 +15,15 @@ import { useDispatch, useSelector } from "react-redux"
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-
-import avatar from "../../assets/img/faces/muhammed.jpg";
 import { addLocalDriver } from "../../redux/actions/driversActions";
 import TrucksTable from "../Trucks/TrucksTable";
 import { isTableFiltered } from "../../redux/actions/tableActions";
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
-import { RootStore } from "_store/store"
-import VButton from "../../components/CustomButtons/TSButton"
+import TSButton from "App/components/CustomButtons/TSButton";
+import { RootStore } from "_store/store";
 
-
-const styles = {
+const styles: StyleRules = {
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
         margin: "0",
@@ -38,7 +35,7 @@ const styles = {
         color: "#FFFFFF",
         marginTop: "0px",
         minHeight: "auto",
-        fontWeight: "300",
+        fontWeight: 300,
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
         marginBottom: "3px",
         textDecoration: "none"
@@ -63,219 +60,205 @@ const labels: { [index: string]: string } = {
     5: 'Excellent+',
 };
 
-// const useStyles = makeStyles(styles);
+const useStyles = makeStyles(() => createStyles(styles))
 
-// const DriverProfile: React.FC<any> = () => {
-//     const driversState = useSelector(
-//         (state: RootStore) => state.drivers,
-//     )
-//     const dispatch = useDispatch()
-//     const classes = useStyles();
+const DriverProfile: React.FC<any> = (props) => {
+    const classes = useStyles();
+    const dispatch = useDispatch()
+    const driver = useSelector(
+        (state: RootStore) => state.drivers.localDriver,
+    )
 
-//     const [driver, setDriver] = React.useState(driversState.localDriver)
-//     const [truck, setTruck] = React.useState(driversState.localDriver?.trucks[0])
-//     const [rating, setRating] = React.useState<number | null>(3);
-//     const [hover, setHover] = React.useState(-1);
-//     const [showAttachVehicle, setshowAttachVehicle] = React.useState(false);
-//     // const classes = useStyles();
+    const [truck, setTruck] = React.useState(driver && driver.trucks[0])
+    const [rating, setRating] = React.useState<number | null>(driver === undefined ? null : driver.charisma);
+    const [hover, setHover] = React.useState(-1);
+    const [showAttachVehicle, setshowAttachVehicle] = React.useState(false);
 
-//     // const driver = drivers.filter((d)=>{
-//     //   return d.driverId === props.history.location.state.driverId
-//     // })
+    React.useEffect(() => {
+        // console.log('component mounted')
 
-//     React.useEffect(() => {
-//         // console.log('component mounted')
-//         //  console.log(props.trucks)
-//         // console.log({"DriverId":props.driver.id});
-//         //let truck = props.trucks.find(t => t.driverId === props.driver.id)
+        // return a function to execute at unmount
+        return () => {
+            // console.log('component will unmount')
+            dispatch(addLocalDriver(null))
+            dispatch(isTableFiltered(false))
+        }
+    }, []) // notice the empty array
+    return (
+        <PageContainer>
+            <PageToolbar
+                title={`Drivers/${driver && driver.name}`}
+            />
+            <GridContainer>
+                <GridItem xs={12} sm={12} md={8}>
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Profile</h4>
+                            {/* <p className={classes.cardCategoryWhite}>Complete yo profile</p> */}
+                        </CardHeader>
+                        <CardBody>
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={6}>
+                                    <CustomInput
+                                        labelText="Name"
+                                        id="company-disabled"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.name : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={6}>
+                                    <CustomInput
+                                        labelText="Email address"
+                                        id="email-address"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.email : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                            </GridContainer>
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={6}>
+                                    <CustomInput
+                                        labelText="Telephone"
+                                        id="telephone"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.telephone : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={6}>
+                                    <CustomInput
+                                        labelText="City"
+                                        id="city"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.city : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                            </GridContainer>
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <CustomInput
+                                        labelText="Gender"
+                                        id="gender"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.gender : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <CustomInput
+                                        labelText="National ID"
+                                        id="national-id"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.nin : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <CustomInput
+                                        labelText="Date of Birth"
+                                        id="dato-of-birth"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            disabled: true,
+                                            value: `${driver ? driver.birthday : null}`
+                                        }}
+                                    />
+                                </GridItem>
+                            </GridContainer>
+                        </CardBody>
+                        <CardFooter>
+                            <Button color="transparent"></Button>
+                        </CardFooter>
+                    </Card>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                    <Card profile>
+                        <CardAvatar profile>
+                            <a href="#pablo" onClick={e => e.preventDefault()}>
+                                <img src={driver && driver.photo.url} alt="..." />
+                            </a>
+                            {/* <IconButton className={classes.personIcon}>
+                <PersonIcon />
+              </IconButton> */}
 
-//         // setTruck(props.driver && props.driver.trucks[0])
-//         // console.log({ Truck: truck })
-//         // setDriver(props.driver)
+                        </CardAvatar>
+                        <CardBody profile>
+                            <Box component="fieldset" mb={3} borderColor="transparent">
+                                <div className={classes.root}>
+                                    <Rating size="large"
+                                        name="hover-feedback"
+                                        value={rating}
+                                        precision={0.5}
+                                        onChange={(_, newValue) => {
+                                            setRating(newValue);
+                                        }}
+                                        onChangeActive={(_, newHover) => {
+                                            setHover(newHover);
+                                        }}
+                                        emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                                    />
+                                    {rating !== null && <Box ml={2}>{labels[hover !== -1 ? hover : rating]}</Box>}
+                                </div>
+                            </Box>
+                            <h4 className={classes.cardTitle}>{driver != null ? driver.name : ''}</h4>
+                            {(truck && truck !== undefined && truck.id !== null) ?
+                                <div className={classes.cardCategory}> {truck.brand}  {truck.model}  {truck.type}</div> :
+                                <TSButton color="primary" onClick={() => {
+                                    setshowAttachVehicle(!showAttachVehicle)
+                                    props.dispatch(isTableFiltered(true))
+                                }}>
+                                    {!showAttachVehicle ? 'Attach A car' : 'Cancle'}
 
-//         // return a function to execute at unmount
-//         return () => {
-//             // console.log('component will unmount')
-//             dispatch(addLocalDriver(undefined))
-//             dispatch(isTableFiltered(false))
-//         }
-//     }, []) // notice the empty array
-//     return (
-//         <PageContainer>
-//             <PageToolbar
-//                 title={`Drivers/${driver && driver.name}`}
-//             />
-//             <GridContainer>
-//                 <GridItem xs={12} sm={12} md={8}>
-//                     <Card>
-//                         <CardHeader color="primary">
-//                             <h4 className={classes.cardTitleWhite}>Profile</h4>
-//                             {/* <p className={classes.cardCategoryWhite}>Complete yo profile</p> */}
-//                         </CardHeader>
-//                         <CardBody>
-//                             <GridContainer>
-//                                 <GridItem xs={12} sm={12} md={6}>
-//                                     <CustomInput
-//                                         labelText="Name"
-//                                         id="company-disabled"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.name : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                                 <GridItem xs={12} sm={12} md={6}>
-//                                     <CustomInput
-//                                         labelText="Email address"
-//                                         id="email-address"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.email : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                             </GridContainer>
-//                             <GridContainer>
-//                                 <GridItem xs={12} sm={12} md={6}>
-//                                     <CustomInput
-//                                         labelText="Telephone"
-//                                         id="telephone"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.telephone : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                                 <GridItem xs={12} sm={12} md={6}>
-//                                     <CustomInput
-//                                         labelText="City"
-//                                         id="city"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.city : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                             </GridContainer>
-//                             <GridContainer>
-//                                 <GridItem xs={12} sm={12} md={4}>
-//                                     <CustomInput
-//                                         labelText="Gender"
-//                                         id="gender"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.gender : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                                 <GridItem xs={12} sm={12} md={4}>
-//                                     <CustomInput
-//                                         labelText="National ID"
-//                                         id="national-id"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.nin : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                                 <GridItem xs={12} sm={12} md={4}>
-//                                     <CustomInput
-//                                         labelText="Date of Birth"
-//                                         id="dato-of-birth"
-//                                         formControlProps={{
-//                                             fullWidth: true
-//                                         }}
-//                                         inputProps={{
-//                                             disabled: true,
-//                                             value: `${driver ? driver.dob : null}`
-//                                         }}
-//                                     />
-//                                 </GridItem>
-//                             </GridContainer>
-//                         </CardBody>
-//                         <CardFooter>
-//                             <Button color="transparent"></Button>
-//                         </CardFooter>
-//                     </Card>
-//                 </GridItem>
-//                 <GridItem xs={12} sm={12} md={4}>
-//                     <Card profile>
-//                         <CardAvatar profile>
-//                             <a href="#pablo" onClick={e => e.preventDefault()}>
-//                                 <img src={avatar} alt="..." />
-//                             </a>
-//                             {/* <IconButton className={classes.personIcon}>
-//                 <PersonIcon />
-//               </IconButton> */}
+                                </TSButton>}
+                            <h4 className={classes.cardTitle}>{truck ? `${truck.licencePlate}` : ''}</h4>
+                            <p className={classes.description}>
+                                Don{"'"}t be scared of the truth because we need to restart the
+                human foundation in truth And I love you like Kanye loves Kanye
+                I love Rick Owens’ bed design but the back is...
+              </p>
+                            {truck ?
+                                <TSButton color="primary" onClick={(e) => {
+                                    setTruck(undefined)
+                                }}>Remove car</TSButton>
+                                : <div />}
 
-//                         </CardAvatar>
-//                         <CardBody profile>
-//                             <Box component="fieldset" mb={3} borderColor="transparent">
-//                                 <div className={classes.root}>
-//                                     <Rating size="large"
-//                                         name="hover-feedback"
-//                                         value={rating}
-//                                         precision={0.5}
-//                                         onChange={(_, newValue) => {
-//                                             setRating(newValue);
-//                                         }}
-//                                         onChangeActive={(_, newHover) => {
-//                                             setHover(newHover);
-//                                         }}
-//                                         emptyIcon={<StarBorderIcon fontSize="inherit" />}
-//                                     />
-//                                     {rating !== null && <Box ml={2}>{labels[hover !== -1 ? hover : rating]}</Box>}
-//                                 </div>
-//                             </Box>
-//                             <h4 className={classes.cardTitle}>{driver != null ? driver.name : ''}</h4>
-//                             {(truck && truck !== undefined && truck.id !== null) ?
-//                                 <div className={classes.cardCategory}> {truck.brand}  {truck.model}  {truck.type}</div> :
-//                                 <Button color="primary" round onClick={() => {
-//                                     setshowAttachVehicle(!showAttachVehicle)
-//                                     dispatch(isTableFiltered(true))
-//                                 }}>
-//                                     {!showAttachVehicle ? 'Attach A car' : 'Cancle'}
+                        </CardBody>
+                    </Card>
+                </GridItem>
+            </GridContainer>
+            {showAttachVehicle ? <TrucksTable /> : <div />}
 
-//                                 </Button>}
-//                             <h4 className={classes.cardTitle}>{truck ? `${truck.licencePlate}` : ''}</h4>
-//                             <p className={classes.description}>
-//                                 Don{"'"}t be scared of the truth because we need to restart the
-//                 human foundation in truth And I love you like Kanye loves Kanye
-//                 I love Rick Owens’ bed design but the back is...
-//               </p>
-//                             {truck ?
-//                                 <VButton color="primary" onClick={() => {
-//                                     setTruck(undefined)
-//                                 }}>
-//                                     Remove car
-//                 </VButton> : <div />}
+        </PageContainer>
+    );
+}
 
-//                         </CardBody>
-//                     </Card>
-//                 </GridItem>
-//             </GridContainer>
-//             {showAttachVehicle ? <TrucksTable /> : <div />}
-
-//         </PageContainer>
-//     );
-// }
-
-// export default DriverProfile;
+export default DriverProfile

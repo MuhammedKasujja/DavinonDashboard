@@ -16,6 +16,13 @@ class ReportsService  {
     });
   }
 
+  fetchGrandTotalPayments() {
+    return restConnector({
+      url: `/payments/grand-total`,
+      method: "GET"
+    });
+  }
+
   signin(email: string, password:string) {
     return restConnector({
       url: `${baseLink}/login/${email}/${password}`,

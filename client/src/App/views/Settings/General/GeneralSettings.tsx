@@ -9,6 +9,7 @@ import CouponForm from '../Coupons/CouponForm';
 import PushNotificationForm from '../PushNotifications/PushNotificationForm';
 import AdvertForm from '../Adverts/AdvertForm';
 import AppSettingsForm from './AppSettings';
+import BrandsTable from 'App/views/CarBrands/BrandsTable';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,6 +64,7 @@ export default function SimpleTabs() {
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Settings" {...a11yProps(0)} />
+          <Tab label="Car Brands" {...a11yProps(1)} />
           <Tab label="Promo Codes" {...a11yProps(1)} />
           <Tab label="Notifications" {...a11yProps(2)} />
           <Tab label="Adverts" {...a11yProps(3)} />
@@ -72,12 +74,15 @@ export default function SimpleTabs() {
         <AppSettingsForm />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CouponForm />
+        <BrandsTable />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <PushNotificationForm />
+        <CouponForm />
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <PushNotificationForm />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         <AdvertForm />
       </TabPanel>
     </div>

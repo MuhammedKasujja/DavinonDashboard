@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import EditIcon from "@material-ui/icons/Edit"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 // import { addData, fetchCars } from 'App/redux/actions/carsActions'
 import { Vehicle } from '_store/truck/types'
 import { Column } from 'react-table'
@@ -17,6 +17,7 @@ const TrucksTable: React.FC<any> = () => {
     (state: RootStore) => state.vehicles, 
   )
   const dispatch = useDispatch()
+  const history = useHistory()
   const columns: Array<Column<Vehicle>> = React.useMemo(
     () => [
       {
@@ -82,8 +83,9 @@ const TrucksTable: React.FC<any> = () => {
   }, [])
 
   const handleAddTruck = useCallback(
-    (event: React.MouseEvent<Element, MouseEvent>) => {
-      console.log({'event':event})
+    (_event: React.MouseEvent<Element, MouseEvent>) => {
+      // console.log({'event':event})
+      history.push('/admin/cars/new')
     },
     []
   )

@@ -90,6 +90,16 @@ function getData(collection) {
     });
 }
 
+exports.getGrandTotalPayments =async ()=> {
+    const snapshot = await db.collection(COLLECTION_PAYMENTS).select('amount').get()
+    var total = 0
+    snapshot.forEach(doc => {
+        total +=doc.data()['amount']
+        console.log({'Doc':doc.data(),'Total':total})
+    })
+    return total
+}
+
 exports.attachVehicleToDriver = (data) => {
     const ref = db.collection(COLLECTION_VEHICLES).doc(data.truckId)
     return ref.set({ driverId: data.driverId }, { merge: true }).then((p) => {
@@ -226,7 +236,7 @@ exports.addBrandModel = async (data, res) => {
 
 }
 
-exports.streamTrips = (res) => {
+exports.streamTrips = (res, date) => {
     res.writeHead(200, {
         'Connection': "keep-alive",
         "Content-Type": "text/event-stream",
@@ -234,7 +244,7 @@ exports.streamTrips = (res) => {
         "Access-Control-Allow-Origin": "*"
     });
     res.write('\n');
-    db.collection(COLLECTION_TRIPS)
+    db.collection(COLLECTION_TRIPS).where('createdOn','>=',date)
         .onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
                 // var total = querySnapshot.size.toString()
@@ -396,7 +406,7 @@ exports.login = async (email, password) => {
 
 }
 
-exports.streamNewPayments = (res) => {
+exports.streamNewPayments = (res,date) => {
     res.writeHead(200, {
         'Connection': "keep-alive",
         "Content-Type": "text/event-stream",
@@ -404,7 +414,7 @@ exports.streamNewPayments = (res) => {
         "Access-Control-Allow-Origin": "*"
     });
     res.write('\n');
-    db.collection(COLLECTION_PAYMENTS)
+    db.collection(COLLECTION_PAYMENTS).where('createdOn','>=',date)
         .onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
                 var data = []

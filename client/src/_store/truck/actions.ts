@@ -24,11 +24,11 @@ export function fetchVehicles(vehicles: Vehicle[]): VehicleActionTypes {
     }
 }
 
-export const saveVehicle = (vehicle: any) => async (dispatch: Dispatch<VehicleActionTypes>) => {
+export const saveVehicle = (vehicle: Vehicle) => async (dispatch: Dispatch<VehicleActionTypes>) => {
     // console.log({'vehicle':vehicle.entries()})
-    for (var p of vehicle) {
-        console.log({'DataForm':p});
-      }
+    // for (var p of vehicle) {
+    //     console.log({'DataForm':p});
+    //   }
     const res = await service.TruckService.addTruck(vehicle);
     console.log({ 'TruckServiceSaved': res.data })
     // dispatch({

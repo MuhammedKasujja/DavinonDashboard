@@ -4,14 +4,17 @@ import CreateIcon from '@material-ui/icons/CreateOutlined'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import ViewColumnsIcon from '@material-ui/icons/ViewColumn'
+import DownloadIcon from "@material-ui/icons/FontDownload"
 import classnames from 'classnames'
 import React, { MouseEvent, MouseEventHandler, PropsWithChildren, ReactElement, useCallback, useState } from 'react'
-import { TableInstance } from 'react-table'
+import { Row, TableInstance } from 'react-table'
 import { TableMouseEventHandler } from 'types/react-table-config'
 
 import { ColumnHidePage } from './ColumnHidePage'
 import { FilterPage } from './FilterPage'
 import { GlobalFilter } from './filters'
+import { CSVLink, CSVDownload } from 'react-csv';
+import { Data } from 'react-csv/components/CommonPropTypes'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,7 +139,7 @@ type TableToolbar<T extends object> = {
   onAdd?: TableMouseEventHandler
   onDelete?: TableMouseEventHandler
   onEdit?: TableMouseEventHandler
-  handleOnAdd?:MouseEventHandler
+  handleOnAdd?: MouseEventHandler
 }
 
 export function TableToolbar<T extends object>({
@@ -152,6 +155,7 @@ export function TableToolbar<T extends object>({
   const [columnsOpen, setColumnsOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
   const hideableColumns = columns.filter((column) => !(column.id === '_selector'))
+  const [csvData, setCsvData] = useState<Data>([])
 
   const handleColumnsClick = useCallback(
     (event: MouseEvent) => {
@@ -174,6 +178,30 @@ export function TableToolbar<T extends object>({
     setFilterOpen(false)
     setAnchorEl(undefined)
   }, [])
+
+  const dataToDownload = (data: Row<T>[],) =>
+    data.map(record =>
+      columns.reduce((recordToDownload, column) => {
+        var colHeader = column.Header;
+        // var value = record[column.];
+        // recordToDownload[colHeader] = record[column.accessor];
+        return recordToDownload;
+      }, {})
+
+    );
+
+  const downloadToCSV = (event: any) => {
+    // instance.rows.
+    const currentRecords = instance.rows;
+    var data_to_download = []
+    for (var index = 0; index < currentRecords.length; index++) {
+      var row = currentRecords[index].original
+      data_to_download.push(currentRecords[index].original)
+    }
+    setCsvData(data_to_download)
+
+    console.log({ DataRecords: data_to_download })
+  }
 
   // toolbar with add, edit, delete, filter/search column select.
   return (
@@ -216,6 +244,14 @@ export function TableToolbar<T extends object>({
             variant='left'
           />
         )}
+        <button onClick={downloadToCSV}>Download</button>
+        <CSVLink data={csvData} >Download me</CSVLink>
+        {/* <LabeledActionButton<T>
+          icon={<DownloadIcon />}
+          onClick={downloadToCSV}
+          label='CSV'
+          variant='left'
+        /> */}
       </div>
       <div className={classes.rightButtons}>
         {/* <GlobalFilter<T> instance={instance} /> */}
@@ -227,6 +263,7 @@ export function TableToolbar<T extends object>({
           label='New'
           variant='right'
         />}
+
         {hideableColumns.length > 1 && (
           <SmallIconActionButton<T>
             icon={<ViewColumnsIcon />}

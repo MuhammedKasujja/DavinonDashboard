@@ -34,7 +34,7 @@ const defaultProps = {};
 
 const TSButton: React.FC<ButtonProps> = ({variant, children, ...props}) => {
   return (
-    <MuiButton variant={variant} {...props}>
+    <MuiButton color='primary' variant={variant} {...props}>
        {children}
     </MuiButton>
   )

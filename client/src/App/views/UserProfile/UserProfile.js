@@ -198,7 +198,7 @@ function UserProfile(props) {
                     }}
                     inputProps={{
                       disabled: true,
-                      value: `${driver ? driver.dob : null}`
+                      value: `${driver ? driver.birthday : null}`
                     }}
                   />
                 </GridItem>
@@ -213,7 +213,7 @@ function UserProfile(props) {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
+                <img src={driver && driver.photo.url} alt="..." />
               </a>
               {/* <IconButton className={classes.personIcon}>
                 <PersonIcon />

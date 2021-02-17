@@ -1,5 +1,4 @@
 import React from "react"
-import RegisterDriverCar from "../Drivers/RegisterDriverCar"
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import IconButton from "@material-ui/core/IconButton"
@@ -7,6 +6,7 @@ import AttachFileIcon from "@material-ui/icons/AddAPhoto"
 import Typography from "@material-ui/core/Typography"
 import Tooltip from "@material-ui/core/Tooltip"
 import Box from "@material-ui/core/Box"
+import RegisterCar from "./RegisterCar"
 
 const RegisterTruck: React.FC<any> = () => {
   const [imageName, setImageName] = React.useState('')
@@ -55,7 +55,7 @@ const RegisterTruck: React.FC<any> = () => {
           }
         />
         <input type="file" accept="image/*" id="file" ref={inputFile} style={{ display: "none" }} onChange={onChange} />
-        <RegisterDriverCar image={selectedImage} />
+        <RegisterCar image={selectedImage} />
       </PageContainer>
     </PageContainer>
   )

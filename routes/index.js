@@ -10,7 +10,7 @@ const { COLLECTION_BRANDS,
   COLLECTION_VEHICLE_TYPES,
   COLLECTION_VEHICLES,
   COLLECTION_TRIPS,
-  COLLECTION_PASSENGERS, 
+  COLLECTION_PASSENGERS,
   COLLECTION_USERS,
   COLLECTION_TRIP_REVIEWS,
   COLLECTION_PAYMENTS,
@@ -114,16 +114,16 @@ router.get('/add_trucks', function (req, res, next) {
 
 router.post('/trucks/add', function (req, res, next) {
 
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(500).json(err)
-    } else if (err) {
-      return res.status(500).json(err)
-    }
-    console.log({ 'ReqBody': req.body })
-    return res.status(200).send(req.file)
+  // upload(req, res, function (err) {
+  //   if (err instanceof multer.MulterError) {
+  //     return res.status(500).json(err)
+  //   } else if (err) {
+  //     return res.status(500).json(err)
+  //   }
+  //   console.log({ 'ReqBody': req.body })
+  //   return res.status(200).send(req.file)
 
-  })
+  // })
   // if (!req.files || Object.keys(req.files).length === 0)
   //   console.log({ 'NoFiles': 'Files not found' })
   // else
@@ -131,10 +131,9 @@ router.post('/trucks/add', function (req, res, next) {
   // const file = req.file
   // console.log({ 'File': file.name })
   // repo.fileUpload()
-  // repo.postData(COLLECTION_VEHICLES, req.body, res)
-  //   .then(msg => res.json(msg))
-  //   .catch(err => res.json(err));
-  // res.json({ Data: 'I love this' });
+  repo.postData(COLLECTION_VEHICLES, req.body, res)
+    .then(msg => res.status(200).json(msg))
+    .catch(err => res.status(500).json(err));
 });
 
 router.get('/trucks', function (req, res, next) {
@@ -213,16 +212,20 @@ router.post('/addVehicleType', (req, res, next) => {
 });
 
 /*********  streams for notifications **************/
-router.get('/trips/stream', function (req, res, next) {
-  repo.streamTrips(res)
+router.get('/trips/stream/:date', function (req, res, next) {
+  const { date } = req.params
+  console.log({ 'RequestParams': date })
+
+  repo.streamTrips(res,date)
 });
 
 router.get('/drivers/active', function (req, res, next) {
   repo.streamActiveDrivers(res)
 });
 
-router.get('/payments/stream', function (req, res, next) {
-  repo.streamNewPayments(res)
+router.get('/payments/stream/:date', function (req, res, next) {
+  const { date } = req.params
+  repo.streamNewPayments(res, date)
 });
 
 /**************** end streams ****************/
@@ -265,6 +268,13 @@ router.post('/users/register', function (req, res, next) {
 router.get('/payments', function (req, res, next) {
   Promise.all([repo.fetchData(COLLECTION_PAYMENTS)]).then(function (results) {
     console.log("payments: " + results[0].length)
+    res.json(results[0]);
+  })
+});
+
+router.get('/payments/grand-total', function (req, res, next) {
+  Promise.all([repo.getGrandTotalPayments()]).then(function (results) {
+    // console.log("TotalPayments: " + results[0].length)
     res.json(results[0]);
   })
 });

@@ -99,7 +99,7 @@ const HeaderProfile = () => {
           </ListItemIcon>
           <ListItemText primary="My Accounts" />
         </MenuItem>
-        <MenuItem onClick={handleClose} component={Link} to="#">
+        <MenuItem onClick={handleClose} component={Link} to="/admin/settings">
           <ListItemIcon>
             <IconSettings />
           </ListItemIcon>

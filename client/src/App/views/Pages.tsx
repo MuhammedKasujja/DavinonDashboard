@@ -1,5 +1,5 @@
 
-import UserProfile from "./UserProfile/UserProfile.js";
+import DriverProfile from "./Drivers/DriverProfile";
 import RegisterDriver from "./Drivers/RegisterPage"
 import BrandsTable from "./CarBrands/BrandsTable"
 import Register from "./CarBrands/Register"
@@ -20,13 +20,15 @@ import GeneralSettings from "./Settings/General/GeneralSettings"
 import TripDetails from "./Trips/TripDetails"
 import TripPaymentReport from './Reports/TripPaymentReport'
 import TripsReviews from './Reports/TripsReviewsReport'
+import MapWrapper from "./Maps/index"
 
 const dashboardRoutes = ({
-    DashboardPage, TripsMap, TripsTable, UserProfile, //Drivers,
+    DashboardPage, TripsMap, TripsTable, DriverProfile, //Drivers,
     DriversTable,
     RegisterDriver,
     PassengersTable,
     TrucksTable,
+    MapWrapper,
     RegisterTruck,
     BrandsTable,
     Register,

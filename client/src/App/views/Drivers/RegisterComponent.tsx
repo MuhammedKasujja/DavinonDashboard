@@ -1,10 +1,8 @@
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, StyleRules } from "@material-ui/core/styles";
 // core components
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
-import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
@@ -12,13 +10,15 @@ import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import GenderInput from "../../components/CustomInput/GenderInput";
 // import DatepickerInput from "../../components/CustomInput/DatepickerInput";
-import RegisterDriverCar from "./RegisterDriverCar"
-import { connect } from "react-redux"
 
 import { useState } from "react"
 import PhoneInput from "App/components/CustomInput/PhoneInput";
+import RegisterCar from "../Trucks/RegisterCar";
+import CustomInputText from "App/components/CustomInput/input";
+import { Driver } from "_store/driver/types";
+import { DriverRating, DriverState } from "_types/Enums";
 
-const styles = {
+const styles: StyleRules = {
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
         margin: "0",
@@ -30,65 +30,63 @@ const styles = {
         color: "#FFFFFF",
         marginTop: "0px",
         minHeight: "auto",
-        fontWeight: "300",
+        fontWeight: 300,
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
         marginBottom: "3px",
         textDecoration: "none"
     }
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(() => createStyles(styles))
 
-function DriverRegisterComponent(props) {
+const DriverRegisterComponent: React.FC<any> = () => {
     const classes = useStyles('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [gender, setGender] = useState('');
     const [email, setEmail] = useState('');
     const [telephone, setTelephone] = useState('+256');
-    const [dob, setDoB] = useState('');
+    const [dob] = useState('');
     const [nin, setNin] = useState('')
     const [city, setCity] = useState('')
 
-    const {
-        brandsList,
-        tonnages, truckBodies, vehicleTypes
-    } = props;
+    const getDriver: Driver = {
+        name: `${firstname} ${lastname}`,
+        telephone: telephone,
+        email: email,
+        gender: gender,
+        birthday: dob,
+        nin: nin,
+        city: city,
+        charisma: DriverRating.Good,
+        oneSignalPlayerID: '',
+        trucks: [],
+        status: DriverState.Offline,
+        photo: {
+            isOnline: false,
+            url: 'assets/images/usuario/avatar_user.png'
+        },
+        createdOn: Date.now(),
+        isOnline: true,
+        available: false
+    };
 
-    const getDriver = () => {
-        return {
-            "name": `${firstname} ${lastname}`,
-            "telephone": telephone,
-            "email": email,
-            "gender": gender,
-            "dob": dob,
-            "nin": nin,
-            "city": city,
-            "photo": {
-                "isOnline": false,
-                "url": 'assets/images/usuario/avatar_user.png'
-            },
-            "createdOn": Date.now(),
-            "status": true,
-            "available": false
-        };
-    }
     React.useEffect(() => {
         //// class method {componentDidUpdate}////
         // console.log({ 'Success': props.success })
-        if (props.success === true) {
-            setFirstname('')
-            setLastname('')
-            setGender('')
-            setNin('')
-            setTelephone('+256')
-            setCity('')
-            setEmail('')
-            setDoB('')
-        }
-        
+        // if (props.success === true) {
+        //     setFirstname('')
+        //     setLastname('')
+        //     setGender('')
+        //     setNin('')
+        //     setTelephone('+256')
+        //     setCity('')
+        //     setEmail('')
+        //     setDoB('')
+        // }
 
-    }, [props.success])
+
+    }, [])// [props.success])
 
     return (
         <div>
@@ -102,7 +100,7 @@ function DriverRegisterComponent(props) {
                         <CardBody>
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput onChange={(val) => {
+                                    <CustomInputText handleChange={(val) => {
                                         setFirstname(val);
                                     }}
                                         labelText="Firstname"
@@ -116,7 +114,7 @@ function DriverRegisterComponent(props) {
                                     />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput onChange={(val) => {
+                                    <CustomInputText handleChange={(val) => {
                                         setLastname(val);
                                     }}
                                         labelText="Lastname"
@@ -133,7 +131,7 @@ function DriverRegisterComponent(props) {
                             </GridContainer>
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <PhoneInput onChange={(val) => {
+                                    <PhoneInput onChange={(val: string) => {
                                         console.log(val)
                                         setTelephone(val);
                                     }}
@@ -145,7 +143,7 @@ function DriverRegisterComponent(props) {
                                     />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput onChange={(val) => {
+                                    <CustomInputText handleChange={(val) => {
                                         setEmail(val);
                                     }}
                                         labelText="Email"
@@ -160,7 +158,7 @@ function DriverRegisterComponent(props) {
                                     />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput onChange={(val) => {
+                                    <CustomInputText handleChange={(val) => {
                                         setCity(val);
                                     }}
                                         labelText="City"
@@ -176,7 +174,7 @@ function DriverRegisterComponent(props) {
                             </GridContainer>
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput onChange={(val) => {
+                                    <CustomInputText handleChange={(val) => {
                                         setNin(val);
                                     }}
                                         labelText="National ID (NIN)"
@@ -190,7 +188,7 @@ function DriverRegisterComponent(props) {
                                     />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <GenderInput onGenderChanged={(val) => {
+                                    <GenderInput onGenderChanged={(val: string) => {
                                         setGender(val)
                                         // console.log(val)
                                     }} />
@@ -209,17 +207,11 @@ function DriverRegisterComponent(props) {
                     </Card>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={5}>
-                    <RegisterDriverCar getDriver={getDriver} brandsList={brandsList}
-                        tonnages={tonnages} truckBodies={truckBodies} vehicleTypes={vehicleTypes} />
+                    <RegisterCar driver={getDriver} />
                 </GridItem>
             </GridContainer>
         </div>
     );
 }
 
-const mapStateToProps = (state) => {
-    return {
-        success: state.drivers.isAdded
-    };
-}
-export default connect(mapStateToProps)(DriverRegisterComponent);
+export default DriverRegisterComponent

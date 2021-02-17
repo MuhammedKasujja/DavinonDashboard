@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   withScriptjs,
   withGoogleMap,
@@ -15,8 +15,12 @@ import { Trip } from "_store/trips/types";
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 interface MapWithMarkersProps{
-    selectedMarker:boolean
+  markers: Trip[],
+  selectedMarker: false,
+  onClick:(e:any)=>void,
+  children?: ReactNode
 }
+
 // const MapWithMarkers = compose(withScriptjs,
 //   withGoogleMap)((props:any) => {
 //     return (
@@ -96,7 +100,7 @@ interface MapWithMarkersProps{
 //         }}
 //       >
 //         {props.markers.map((trip:Trip) => {
-//           const onClick = props.onClick.bind(this, trip)
+//           const onClick = props.onClick( trip)
 //           const tripStatus = () => {
 //             var status = trip.status;
 //             if (status === 1) {
@@ -163,13 +167,13 @@ interface MapWithMarkersProps{
 //     var url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBIka0wD5mEerRq7aSbxHqxBGPFYYVkp64"//+GOOGLE_API_KEY;
 //     return (
 //       <MapWithMarkers
-//         // selectedMarker={selectedMarker}
-//         // markers={props.trips}
-//         // onClick={handleMarkerClick}
-//         // googleMapURL={url}
-//         // loadingElement={<div style={{ height: `100%` }} />}
-//         // containerElement={<div style={{ height: `100vh` }} />}
-//         // mapElement={<div style={{ height: `100%` }} />}
+//         selectedMarker={selectedMarker}
+//         markers={props.trips}
+//         onClick={handleMarkerClick}
+//         googleMapURL={url}
+//         loadingElement={<div style={{ height: `100%` }} />}
+//         containerElement={<div style={{ height: `100vh` }} />}
+//         mapElement={<div style={{ height: `100%` }} />}
 //       />
 //     );
 // }

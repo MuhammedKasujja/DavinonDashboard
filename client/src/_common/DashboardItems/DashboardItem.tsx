@@ -16,10 +16,8 @@ interface DashboardItemProps {
 const iconSize = 45;
 const DashboardItem = ({ color }: DashboardItemProps) => {
     const tripsState = useSelector((state: RootStore) => state.trips)
-    const driversState = useSelector((state: RootStore) => state.drivers)
-    const finishedTrips = tripsState.trips.filter(trip =>
-        trip.status === 4
-    )
+    const reportsState = useSelector((state: RootStore) => state.reports)
+    const notificationState = useSelector((state: RootStore) => state.notifications)
 
     const scheduledTrips = tripsState.trips.filter(trip =>
         trip.type === 2 || trip.type === 3
@@ -34,9 +32,9 @@ const DashboardItem = ({ color }: DashboardItemProps) => {
                 icon={<TripsIcon style={{ fontSize: iconSize, color: "#FFCE56" }} />} />
             <DashboardMenuItem value={scheduledTrips.length.toString()} title={'New Travels'} color="#415b59"
                 icon={<TravelsIcons style={{ fontSize: iconSize, color: "#415b59" }} />} />
-            <DashboardMenuItem value={finishedTrips.length.toString()} title={'Revenue'} color="#36A2EB"
+            <DashboardMenuItem value={reportsState.totalPayments.toString()} title={'Revenue'} color="#36A2EB"
                 icon={<RevenueIcon style={{ fontSize: iconSize, color: "#36A2EB" }} />} />
-            <DashboardMenuItem value={driversState.drivers.length.toString()} title={'Drivers'} color="#FF6384"
+            <DashboardMenuItem value={notificationState.activeDrivers.length.toString()} title={'Drivers'} color="#FF6384"
                 icon={<DriversIcon style={{ fontSize: iconSize, color: "#FF6384" }} />} />
         </Grid>
     )

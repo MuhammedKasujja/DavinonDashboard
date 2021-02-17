@@ -80,7 +80,7 @@ const RouteWithLayout = ({ component: Component, layout: Layout, ...rest }: any)
     <Route
       {...rest}
       render={props => {
-        if (authState.user)
+        //if (authState.user)
           if (Layout) {
             return (
               <Layout>
@@ -90,10 +90,11 @@ const RouteWithLayout = ({ component: Component, layout: Layout, ...rest }: any)
           } else {
             return <Component {...props} />
           }
-        else
-          return (
-            <Redirect to={{ pathname: "/", }} />
-          )
+        // redirect to login page
+        // else
+        //   return (
+        //     <Redirect to={{ pathname: "/", }} />
+        //   )
       }}
     />
   )

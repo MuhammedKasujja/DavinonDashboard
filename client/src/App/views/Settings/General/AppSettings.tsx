@@ -81,6 +81,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
     React.useEffect(() => {
         dispatch(fetchAppSettings())
         setOneSignalApiKey(appSettings.oneSignalApiKey)
+        
     }, [])
 
     React.useEffect(() => {
@@ -95,14 +96,14 @@ function AppSettingsForm(props: AppSettingsFormProps) {
         // setFuel('')
         // setGearbox('')
         // }
+
         setStripeApiSecretKey(appSettings.stripeApiSecretKey)
         setCurrency(appSettings.currency)
         setStripeApiPublishableKey(appSettings.stripeApiPublishableKey)
         setOneSignalApiKey(appSettings.oneSignalApiKey)
         setCostPerKm(appSettings.costPerKm)
 
-
-    })
+    },)
 
     return (
         <GridContainer>

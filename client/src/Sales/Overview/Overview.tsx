@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux'
 import { fetchTrips } from '_store/trips/actions';
 // import { GetDrivers } from '_store/driver/actions';
 import { fetchActiveDriversNotification } from '_store/Events/actions'
+import { fetchGrandTotalPayments } from '_store/Reports/actions'
 
 export default function SalesDashboard() {
   const dispatch = useDispatch()
@@ -32,6 +33,7 @@ export default function SalesDashboard() {
     dispatch(fetchTrips())
     // dispatch(GetDrivers())
     dispatch(fetchActiveDriversNotification())
+    dispatch(fetchGrandTotalPayments())
 }, []) 
 
   return (

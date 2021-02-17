@@ -7,8 +7,10 @@ export const login = (password: string, email: string) => async (dispatch: Dispa
     // console.log(res.data)
     // dispatch({
     //     type: AUTH_USER,
-    //     payload:data
+    //     payload:res.data
     // })
+    const date =  Date.now().toString()
+    localStorage.setItem('loginDate','2021-01-07 18:19:06.915285')//new Date().toISOString())
 
     dispatch({
         type:AUTH_USER,

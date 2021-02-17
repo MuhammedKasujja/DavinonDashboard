@@ -46,10 +46,6 @@ const TripPaymentReport: React.FC<any> = () => {
                         accessor: 'createdOn',
                     },
                     {
-                        Header: 'Amount',
-                        accessor: 'amount',
-                    },
-                    {
                         Header: 'Client',
                         accessor: 'clientName',
                     },
@@ -60,6 +56,10 @@ const TripPaymentReport: React.FC<any> = () => {
                     {
                         Header: 'Destination',
                         accessor: `destination`,
+                    },
+                    {
+                        Header: 'Amount',
+                        accessor: 'amount',
                     },
                     {
                         Header: 'Balance',
