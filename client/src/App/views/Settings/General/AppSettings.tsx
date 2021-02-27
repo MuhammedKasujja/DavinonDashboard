@@ -78,32 +78,23 @@ function AppSettingsForm(props: AppSettingsFormProps) {
             costPerKm: costPerKm
         }))
     }
+    // Trigger only once with empty square brackets 
     React.useEffect(() => {
         dispatch(fetchAppSettings())
-        setOneSignalApiKey(appSettings.oneSignalApiKey)
-        
     }, [])
-
+  
+    // Fire when one of the array variables change
     React.useEffect(() => {
-        //// class method {componentDidUpdate}////
-        // console.log({ 'Success': props.success })
-        // if (props.success === true) {
-        // props.dispatch(addDriverSuccesss(false))
-        // showToast('Driver Saved Successfully')
-        // // setMake('')
-        // setSeats('')
-        // setCylinders('')
-        // setFuel('')
-        // setGearbox('')
-        // }
-
         setStripeApiSecretKey(appSettings.stripeApiSecretKey)
         setCurrency(appSettings.currency)
         setStripeApiPublishableKey(appSettings.stripeApiPublishableKey)
         setOneSignalApiKey(appSettings.oneSignalApiKey)
         setCostPerKm(appSettings.costPerKm)
+        setEmail(appSettings.email)
 
-    },)
+    }, [appSettings.stripeApiPublishableKey, appSettings.currency,
+    appSettings.stripeApiSecretKey, appSettings.costPerKm,
+    appSettings.oneSignalApiKey, appSettings.email])
 
     return (
         <GridContainer>
@@ -137,13 +128,12 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                value: `${appSettings.email}`,
+                                                value: `${email}`,
                                                 type: 'email'
                                             }}
                                             labelText='Email'
                                             handleChange={(val) => {
-                                                appSettings.email = val
-                                                // setEmail(val)
+                                                setEmail(val)
                                             }} />
                                     </GridItem>
                                     <GridItem xs={6} sm={6} md={2}>
@@ -152,7 +142,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 setCurrency(val)
                                             }}
                                             value={currency}
-                                            id="choose-car-cylinders"
+                                            id="choose-currency"
                                             items={currencyTypes}
                                             formControlProps={{
                                                 fullWidth: true

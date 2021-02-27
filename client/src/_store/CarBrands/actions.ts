@@ -15,7 +15,8 @@ export const fetchBrands = () => async (dispatch: Dispatch<CarBrandsActionTypes>
 }
 
 export const addBrands = (brand: CarBrand) => async (dispatch: Dispatch<CarBrandsActionTypes>) => {
-    console.log({ 'ReduxDispatch': `printing from redux ${JSON.stringify(brand)}` })
+    // console.log({ 'ReduxDispatch': `printing from redux ${JSON.stringify(brand)}` })
+    // service.AppSettingsService.saveAppConfig()
     service.CarBrandsService.addBrand(brand)
         .then(res => {
             console.log({ 'ReduxDispatch': res.data })

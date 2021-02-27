@@ -18,29 +18,6 @@ const TripPaymentReport: React.FC<any> = () => {
         React.useMemo(
             () =>
                 [
-                    // {
-                    //     id: 'selection',
-                    //     Header: "#",
-                    //     width: 35,
-                    //     // The cell can use the individual row's getToggleRowSelectedProps method
-                    //     // to the render a checkbox
-                    //     Cell: ({ row }) => {
-                    //         // console.log({ RowData: row.original })
-                    //         return (
-                    //             <Link to={{
-                    //                 pathname: `/admin/reports/payments/${row.original.id}`,
-                    //                 // state: {
-                    //                 //     driverId: props.driver.id
-                    //                 // }
-                    //             }} onClick={() => {
-                    //                 console.log("Yeah yes yes...........")
-                    //                 //   dispatch(AddLocalDriver(row.original))
-                    //             }}><EditIcon />
-                    //             </Link>
-                    //         )
-                    //     },
-                    //     accessor: 'id',
-                    // },
                     {
                         Header: 'Date',
                         accessor: 'createdOn',

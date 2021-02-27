@@ -47,7 +47,7 @@ export function generateDailyRandomOrders(date: Moment): Order[] {
   // Ensure the orders are date sorted
   return _sortBy(
     new Array(_random(0, 10)).fill(undefined).map(num => generateRandomOrder(date)),
-    order => moment(order.createdAt).toDate(),
+    order => moment(order.createdOn).toDate(),
   )
 }
 

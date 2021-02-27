@@ -5,7 +5,7 @@ const baseLink = "/users"
 class UserService extends HttpClient {
 
 
-  public login = (email: string, password: string) => this.instance.get<User>(`/users/login/${email}/${password}`);
+  // public login = (email: string, password: string) => this.instance.get<User>(`/users/login/${email}/${password}`);
 
   public register = (user: User) => this.instance.post<any>(`/users/register`, user);
 
@@ -19,10 +19,18 @@ class UserService extends HttpClient {
     });
   }
 
-  signin(email: string, password:string) {
+  signin(email: string, password: string) {
     return restConnector({
       url: `${baseLink}/login/${email}/${password}`,
       method: "GET"
+    });
+  }
+
+  login(email: string, password: string) {
+    return restConnector({
+      url: `/login`,
+      method: "POST",
+      data: { email, password }
     });
   }
 

@@ -1,8 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const repo = require("../helpers/repository");
-var { upload, multer } = require('../helpers/fileUploader')
+const { upload, multer } = require('../helpers/fileUploader')
 // var { streamNewPayments } = require('../helpers/events')
+
+const { fleets } = require('../helpers/utils/Fleets')
+const { tonnages } = require('../helpers/utils/Tonnages')
+const { carTypes } = require('../helpers/utils/CarTypes')
+const { truckBodies } = require('../helpers/utils/TruckBodies')
+const { createUser, login, fetchUsers } = require('../helpers/user')
+const { streamPayments, paymentsNots, markCurrentUserPaymentNotificationsAsRead } = require('../helpers/payments');
+const { createDriver } = require('../helpers/drivers')
+
 const { COLLECTION_BRANDS,
   COLLECTION_TONNAGES,
   COLLECTION_TRUCK_BODY,
@@ -14,16 +23,27 @@ const { COLLECTION_BRANDS,
   COLLECTION_USERS,
   COLLECTION_TRIP_REVIEWS,
   COLLECTION_PAYMENTS,
-  COLLECTION_SETTINGS } = require("../helpers/utils/CollectionTypes");
-
-// const modelTonnages = require("../helpers/utils/Tonnages").tonnages
-// const modelCarTypes = require("../helpers/utils/CarTypes").carTypes
-// const modelFleets = require("../helpers/utils/Fleets").fleets
-// const modelTruckBodies = require("../helpers/utils/TruckBodies").truckBodies
+  COLLECTION_SETTINGS,
+  COLLECTION_FLEETS } = require("../helpers/utils/CollectionTypes");
+const { FBAuth } = require('../helpers/utils/auth_middleware');
+const { markTripNotificationsAsRead, streamTripNotifications } = require('../helpers/trips');
 
 
-router.get('/', function (req, res, next) {
-  res.json({ "Connected": "Yes yes yes" })
+router.post('/signup', createUser)
+router.post('/login', login)
+router.get('/fetchUsers', fetchUsers)
+router.get('/payments/notifications/:uid/:lastLoginDate', streamPayments)
+router.get('/trips/notifications/:uid/:lastLoginDate', streamTripNotifications)
+
+// Read notifications
+router.post('/payments/notifications/read', FBAuth, markCurrentUserPaymentNotificationsAsRead)
+router.post('/trips/notifications/read', FBAuth, markTripNotificationsAsRead)
+///
+router.get('/payments/nots', paymentsNots)
+
+router.get('/', FBAuth, (req, res, next) => {
+  res.status(200).json({ "Connected": "Yes yes yes" })
+
 });
 
 router.get('/trips', (req, res) => {
@@ -114,16 +134,16 @@ router.get('/add_trucks', function (req, res, next) {
 
 router.post('/trucks/add', function (req, res, next) {
 
-  // upload(req, res, function (err) {
-  //   if (err instanceof multer.MulterError) {
-  //     return res.status(500).json(err)
-  //   } else if (err) {
-  //     return res.status(500).json(err)
-  //   }
-  //   console.log({ 'ReqBody': req.body })
-  //   return res.status(200).send(req.file)
-
-  // })
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err)
+    } else if (err) {
+      return res.status(500).json(err)
+    }
+    // console.log({ 'FilePath': `${req.body}` })
+    // console.log({ ResponseData: res })
+    return res.status(200).send(req.file.path)
+  })
   // if (!req.files || Object.keys(req.files).length === 0)
   //   console.log({ 'NoFiles': 'Files not found' })
   // else
@@ -131,9 +151,10 @@ router.post('/trucks/add', function (req, res, next) {
   // const file = req.file
   // console.log({ 'File': file.name })
   // repo.fileUpload()
-  repo.postData(COLLECTION_VEHICLES, req.body, res)
-    .then(msg => res.status(200).json(msg))
-    .catch(err => res.status(500).json(err));
+
+  // repo.postData(COLLECTION_VEHICLES, req.body, res)
+  //   .then(msg => res.status(200).json(msg))
+  //   .catch(err => res.status(500).json(err));
 });
 
 router.get('/trucks', function (req, res, next) {
@@ -150,21 +171,8 @@ router.get('/trucks/truck-body', function (req, res, next) {
   })
 });
 
+router.post('/drivers/add', createDriver)
 
-router.post('/drivers/add', function (req, res, next) {
-  // console.log("Yes yes connected")
-  // var data = {
-  //   name: 'Nakayiza Shamim',
-  //   email: "shamim@gmail.com",
-  //   contact: '0705613444',
-  //   available: true,
-  //   trucks: []
-  // }
-  repo.addDriver(req.body, res)
-    .then(msg => res.json(msg))
-    .catch(err => res.json(err));
-
-});
 router.get('/car-brands', function (req, res, next) {
   Promise.all([repo.fetchData(COLLECTION_BRANDS)]).then(function (results) {
     console.log("CarBrands: " + results[0].length)
@@ -214,18 +222,19 @@ router.post('/addVehicleType', (req, res, next) => {
 /*********  streams for notifications **************/
 router.get('/trips/stream/:date', function (req, res, next) {
   const { date } = req.params
-  console.log({ 'RequestParams': date })
+  // console.log({ 'RequestParams': date })
 
-  repo.streamTrips(res,date)
+  repo.streamTrips(res, date)
 });
 
 router.get('/drivers/active', function (req, res, next) {
   repo.streamActiveDrivers(res)
 });
 
-router.get('/payments/stream/:date', function (req, res, next) {
-  const { date } = req.params
-  repo.streamNewPayments(res, date)
+router.get('/payments/stream/:uid', function (req, res, next) {
+  const { uid } = req.params
+  console.log({ uid })
+  repo.streamNewPayments(res, uid)
 });
 
 /**************** end streams ****************/
@@ -285,12 +294,38 @@ router.get('/trips/reviews', function (_req, res, _next) {
     res.json(results[0]);
   })
 });
-// router.post('/trucks/addData', function (req, res, next) {
-//   fleets.forEach(t => {
-//     repo.postData(COLLECTION_FLEETS, t, res)
-//       .then(msg => console.log(msg))
-//       .catch(err => console.log(err));
-//   });
 
-// });
+/// setting up configurations
+
+router.post('/config/saveSettings', function (req, res, next) {
+
+  fleets.forEach(t => {
+    repo.postData(COLLECTION_FLEETS, t, res)
+      .then(msg => console.log(msg))
+      .catch(err => console.log(err));
+  });
+
+  tonnages.forEach(t => {
+    repo.postData(COLLECTION_TONNAGES, t, res)
+      .then(msg => console.log(msg))
+      .catch(err => console.log(err));
+  });
+
+  carTypes.forEach(t => {
+    repo.postData(COLLECTION_VEHICLE_TYPES, t, res)
+      .then(msg => console.log(msg))
+      .catch(err => console.log(err));
+  });
+
+  truckBodies.forEach(t => {
+    repo.postData(COLLECTION_TRUCK_BODY, t, res)
+      .then(msg => console.log(msg))
+      .catch(err => console.log(err));
+  });
+
+  res.status(200).json({ success: true })
+
+});
+
+
 module.exports = router;

@@ -244,8 +244,8 @@ export function TableToolbar<T extends object>({
             variant='left'
           />
         )}
-        <button onClick={downloadToCSV}>Download</button>
-        <CSVLink data={csvData} >Download me</CSVLink>
+        {/* <button onClick={downloadToCSV}>Download</button>
+        <CSVLink data={csvData} >Download me</CSVLink> */}
         {/* <LabeledActionButton<T>
           icon={<DownloadIcon />}
           onClick={downloadToCSV}

@@ -9,8 +9,9 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
+import Tooltip from '@material-ui/core/Tooltip'
 import { connect, useDispatch, useSelector } from "react-redux"
-import { fetchNewPaymentsNotification, fetchTripNotification } from '_store/Events/actions'
+import { fetchNewPaymentsNotification, fetchTripNotification, makePaymentsNotificationsAsRead } from '_store/Events/actions'
 import { RootStore } from '_store/store'
 import { DefaultToast, ToastProps, ToastProvider, useToasts, ToastConsumer } from 'react-toast-notifications';
 
@@ -52,6 +53,24 @@ const HeaderNotifications = () => {
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)
+    // let notificationsIds: Array<string> = [];
+    // notificationState.payments.forEach(not => {
+    //   notificationsIds.push(not.id);
+    // })
+    // if (notificationsIds.length > 0)
+    //   dispatch(makePaymentsNotificationsAsRead(notificationsIds))
+
+  }
+
+  function handleOpenPaymentsNotificationClick(event: React.MouseEvent<HTMLButtonElement>) {
+    // setAnchorEl(event.currentTarget)
+    let notificationsIds: Array<string> = [];
+    notificationState.payments.forEach(not => {
+      notificationsIds.push(not.id);
+    })
+    if (notificationsIds.length > 0)
+      dispatch(makePaymentsNotificationsAsRead(notificationsIds))
+
   }
 
   function handleClose() {
@@ -72,9 +91,23 @@ const HeaderNotifications = () => {
     //   () => { },
     // )
   })
-  console.log(notificationState.notifications);
   return (
     <div className={classes.headerNotifications}>
+      <Tooltip title='New Payments'>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="Search"
+          className={classes.button}
+          // aria-controls="HeaderNotifications"
+          aria-haspopup="true"
+          onClick={handleOpenPaymentsNotificationClick}
+        >
+          <Badge badgeContent={notificationState.payments.length} color="primary" classes={{ badge: classes.badge }}>
+            <IconNotifications />
+          </Badge>
+        </IconButton>
+      </Tooltip>
       <IconButton
         edge="start"
         color="inherit"
@@ -84,7 +117,7 @@ const HeaderNotifications = () => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <Badge badgeContent={notificationState.notifications.total} color="secondary" classes={{ badge: classes.badge }}>
+        <Badge badgeContent={notificationState.notifications.length} color="secondary" classes={{ badge: classes.badge }}>
           <IconNotifications />
         </Badge>
       </IconButton>
@@ -131,9 +164,9 @@ const HeaderNotifications = () => {
             </ListItem>
           ))}
         </List>
-        <ListItem button alignItems="flex-start" key={notificationState.notifications.type}>
+        <ListItem button alignItems="flex-start" key={notificationState.notifications.length}>
           <ListItemText
-            primary={notificationState.notifications.type}
+            primary={notificationState.notifications.length}
             secondary={
               <React.Fragment>
                 <Typography
@@ -142,9 +175,9 @@ const HeaderNotifications = () => {
                   className={classes.inline}
                   color="textPrimary"
                 >
-                  {notificationState.notifications.total}
+                  {notificationState.notifications.length}
                 </Typography>
-                { }{notificationState.notifications.message.toString()}
+                { }{notificationState.notifications.length.toString()}
               </React.Fragment>
             }
           />
@@ -169,13 +202,15 @@ const useStyles = makeStyles(theme => ({
   notificationsContainer: {
     // position: 'relative',
   },
-  button: {},
+  button: {
+    marginRight: 10
+  },
   badge: {
     color: '#fff',
   },
   notifications: {
     // width: 360,
-    maxWidth: 360,
+    maxWidth: 400,
     backgroundColor: theme.palette.background.paper,
   },
   inline: {

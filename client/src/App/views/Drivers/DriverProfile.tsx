@@ -240,11 +240,11 @@ const DriverProfile: React.FC<any> = (props) => {
 
                                 </TSButton>}
                             <h4 className={classes.cardTitle}>{truck ? `${truck.licencePlate}` : ''}</h4>
-                            <p className={classes.description}>
+                            {/* <p className={classes.description}>
                                 Don{"'"}t be scared of the truth because we need to restart the
                 human foundation in truth And I love you like Kanye loves Kanye
                 I love Rick Owens’ bed design but the back is...
-              </p>
+              </p> */}
                             {truck ?
                                 <TSButton color="primary" onClick={(e) => {
                                     setTruck(undefined)

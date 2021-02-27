@@ -1,5 +1,4 @@
-const auth = require('./auth')
-const admin = require("firebase-admin")
+const { db, admin, auth } = require('./utils/config')
 const {
     COLLECTION_DRIVERS,
     COLLECTION_VEHICLES,
@@ -15,11 +14,6 @@ const {
     TRIP_STATUS_DRIVER_PATH,
     TRIP_STATUS_STARTED } = require("./utils/Constants")
 const { GeoFirestore, GeoQuery, GeoQuerySnapshot } = require('geofirestore')
-
-const serviceAccount = require("../davinon-rides-firebase-adminsdk.json")
-
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-const db = admin.firestore()
 
 exports.addTruck = function (req) {
     const geofirestore = new GeoFirestore(db)
@@ -57,7 +51,7 @@ exports.addVehicleType = (data) => {
     console.log(data)
     //Getting the next document ID
     var ref = db.collection(COLLECTION_VEHICLE_TYPES).doc();
-    data['id'] = ref.id;
+    data.id = ref.id;
     ref.set(data).then(doc => {
         console.log("Vehicle added")
     }).catch(e => {
@@ -90,12 +84,12 @@ function getData(collection) {
     });
 }
 
-exports.getGrandTotalPayments =async ()=> {
+exports.getGrandTotalPayments = async () => {
     const snapshot = await db.collection(COLLECTION_PAYMENTS).select('amount').get()
     var total = 0
     snapshot.forEach(doc => {
-        total +=doc.data()['amount']
-        console.log({'Doc':doc.data(),'Total':total})
+        total += doc.data()['amount']
+        console.log({ 'Doc': doc.data(), 'Total': total })
     })
     return total
 }
@@ -107,111 +101,24 @@ exports.attachVehicleToDriver = (data) => {
     });
 }
 
-exports.saveData = (collection, data) => {
-    console.log(data)
-    //Getting the next document ID
-    var ref = db.collection(collection).doc();
-    data['id'] = ref.id;
-    // var ref;
-    // if (data['id'] === null || data['id'] === undefined) {
-    //     ref = db.collection(collection).doc();
-    //     data['id'] = ref.id;
-    // } else {
-    //     ref = db.collection(collection).doc(data['id']);
-    // }
-    data.createdOn = admin.firestore.FieldValue.serverTimestamp()
-    return ref.set(data).then(doc => {
-        return { "message": "successfull" }
-    }).catch(e => {
-        return { 'error': `Could not save data ${e}` }
-    })
-}
-
 exports.postData = async (collection, data, res) => {
     console.log(data)
-    //Getting the next document ID
-    // console.log({ 'id': data['id'] })
-    // data['createdOn'] = admin.firestore.Timestamp.now;
     var ref;
-    if (data['id'] === null || data['id'] === undefined) {
+    if (data.id === null || data.id === undefined) {
         ref = db.collection(collection).doc();
-        data['id'] = ref.id;
+        data.id = ref.id;
+        data.createdOn = new Date().toISOString();
     } else {
-        ref = db.collection(collection).doc(data['id']);
+        ref = db.collection(collection).doc(data.id);
     }
-    data.createdOn = admin.firestore.FieldValue.serverTimestamp()
+    data.updatedOn = new Date().toISOString();
 
     return ref.set(data).then(doc => {
         console.log({ "Data added": doc })
-        return { "message": "successfull" }
+        return { message: "successfull" }
     }).catch(e => {
-        return { 'error': `Could not save data ${e}` }
+        return { error: `Could not save data ${e}` }
     })
-}
-
-exports.addDriver = (data, res) => {
-    // console.log(data)
-    //Getting the next document ID
-    // console.log({ 'id': data['id'] })
-
-    // if (data['id'] === null || data['id'] === undefined) {
-
-    // } else {
-    //     ref = db.collection("drivers").doc(data['id']);
-    // }
-    var date = new Date().toISOString()
-
-    data.vehicle.createdOn = date
-    data.vehicle.updatedOn = date
-
-    if (data.driver) {
-        const ref = db.collection(COLLECTION_DRIVERS).doc();
-        data.driver.id = ref.id;
-        data.driver.createdOn = admin.firestore.FieldValue.serverTimestamp()
-        return admin.auth().createUser({
-            uid: `${data.driver.id}`,
-            email: `${data.driver.email}`,
-            emailVerified: false,
-            phoneNumber: `${data.driver.telephone}`,
-            password: 'kasmud.2',
-            displayName: `${data.driver.name}`,
-            photoURL: 'http://www.example.com/12345678/photo.png',
-            disabled: false,
-        }).then(function (userRecord) {
-            // admin.auth().generateEmailVerificationLink('al.kasmud.2@gmail.com').then(data=>{
-            //     console.log({"UserVerification":data});
-            // })
-
-            // Generate code to finish signup and change password later [at first login on Mobile App] 
-            // See the UserRecord reference doc for the contents of userRecord.
-            console.log('Successfully created new user:', userRecord.uid);
-            return ref.set(data.driver).then(doc => {
-                data.vehicle['driverId'] = data.driver.id
-                var vehicleRef = db.collection(COLLECTION_VEHICLES).doc();
-                data.vehicle.id = vehicleRef.id;
-                vehicleRef.set(data.vehicle).then(() => {
-                    console.log({ AddingNewVehicle: 'this is awesome' })
-                }).catch(e => {
-                    console.log({ 'VehicleError': `Could not save data ${e}` })
-                })
-                // return { "message": "successfull" }
-            }).catch(e => {
-                console.log('Error creating new driver:', error);
-            })
-            // auth.linkAccount(userRecord,'al.kasmud.2@gmail.com');
-            // console.log('User:', userRecord.toJSON())
-            // userRecord.
-        })
-            .catch(function (error) {
-                console.log('Error creating new user:', error);
-            })
-    } else {
-        data.vehicle.driverId = null
-        var vehicleRef = db.collection(COLLECTION_VEHICLES).doc();
-        data.vehicle.id = vehicleRef.id;
-        return vehicleRef.set(data.vehicle)
-    }
-
 }
 
 exports.addBrandModel = async (data, res) => {
@@ -225,7 +132,7 @@ exports.addBrandModel = async (data, res) => {
     // } else {
     ref = db.collection("Brands").doc(data['id']);
     // }
-    data.createdOn = admin.firestore.FieldValue.serverTimestamp()
+    data.createdOn = new Date().toISOString()
     try {
         const doc = await ref.set({ 'models': admin.firestore.FieldValue.arrayUnion(data['models'][0]) }, { merge: true })
         console.log({ "Data added": doc })
@@ -244,7 +151,7 @@ exports.streamTrips = (res, date) => {
         "Access-Control-Allow-Origin": "*"
     });
     res.write('\n');
-    db.collection(COLLECTION_TRIPS).where('createdOn','>=',date)
+    db.collection(COLLECTION_TRIPS).where('createdOn', '>=', date)
         .onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
                 // var total = querySnapshot.size.toString()
@@ -257,7 +164,7 @@ exports.streamTrips = (res, date) => {
                     // type = "Driver Added"
                     const trip = JSON.stringify(change.doc.data())
                     res.write("event: tripStateAdded\n");
-                    res.write('data: {"type": "Added", "trip":'+`${trip}`+' , "total":' + `${total.length}` + ', "message":"A new trip order"}')
+                    res.write('data: {"type": "Added", "trip":' + `${trip}` + ' , "total":' + `${total.length}` + ', "message":"A new trip order"}')
                     res.write("\n\n");
                     // return;
                 }
@@ -305,7 +212,6 @@ exports.streamActiveDrivers = (res) => {
     });
     res.write('\n');
     db.collection(COLLECTION_DRIVERS).where('status', ">", 0) //getting active drivers
-        // .where('updatedOn', '>', new Date().toString())
         .onSnapshot(querySnapshot => {
             var data = []
             querySnapshot.docs.forEach(doc => {
@@ -315,26 +221,6 @@ exports.streamActiveDrivers = (res) => {
             res.write("event: ActiveDrivers\n");
             res.write('data: {"drivers":' + `${drivers}` + ', "message":"Cool Again"}')
             res.write("\n\n");
-            //console.log(querySnapshot.docs.entries())
-            // querySnapshot.docChanges().forEach(change => {
-            //     if (change.type === 'added') {
-            //         const drivers = JSON.stringify(querySnapshot.docs.entries())
-            //        // console.log( drivers)
-            //         res.write("event: ActiveDrivers\n");
-            //         res.write('data: {"drivers":'+`${drivers}`+', "message":"Cool Again"}')
-            //         res.write("\n\n");
-            //     }
-            //     if (change.type === 'modified') {
-            //         res.write("event: ModifiedDrivers\n");
-            //         res.write('data: {"drivers": "Modified",  "message":"driver status changed"}')
-            //         res.write("\n\n");
-            //     }
-            //     if (change.type === 'removed') {
-            //         res.write("event: RemovedDrivers\n");
-            //         res.write('data: {"drivers": "Removed", "message":"A driver has been removed"}')
-            //         res.write("\n\n");
-            //     }
-            // });
         }, err => {
             console.log(`Encountered error: ${err}`);
             res.write('data: {"flight": "no", "state": "non"}')
@@ -387,9 +273,9 @@ exports.uploadedFile = (bucketName, filename) => {
     uploadFile().catch(console.error);
 }
 
-exports.fileUpload = (file) => {
-    auth.uploadFile(file)
-}
+// exports.fileUpload = (file) => {
+//     auth.uploadFile(file)
+// }
 
 exports.login = async (email, password) => {
     const snapshot = await db.collection(COLLECTION_USERS)
@@ -406,7 +292,7 @@ exports.login = async (email, password) => {
 
 }
 
-exports.streamNewPayments = (res,date) => {
+exports.streamNewPayments = (res, uid) => {
     res.writeHead(200, {
         'Connection': "keep-alive",
         "Content-Type": "text/event-stream",
@@ -414,7 +300,8 @@ exports.streamNewPayments = (res,date) => {
         "Access-Control-Allow-Origin": "*"
     });
     res.write('\n');
-    db.collection(COLLECTION_PAYMENTS).where('createdOn','>=',date)
+    // db.collection(COLLECTION_PAYMENTS).where('createdOn', '>=', date)
+    db.collection('PaymentNotifications').where('seers', 'not-in', [uid])
         .onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
                 var data = []
@@ -424,7 +311,7 @@ exports.streamNewPayments = (res,date) => {
                 if (change.type === 'added') {
                     // const payments = JSON.stringify(querySnapshot.docs.entries())
                     // console.log( drivers)
-                    
+
                     const payments = JSON.stringify(change.doc.data())
                     res.write("event: NewPayment\n");
                     res.write('data: {"payments":' + `${payments}` + ', "message":"Cool Again"}')

@@ -9,6 +9,7 @@ import PassengerService from "./PassengerService"
 import MainApi from "./DriverService.api"
 import AppSettingsService from "./AppSettingsService"
 import ReportsService from './ReportsService'
+import NotificationService from "./NotificationService"
 
 const service = {
     CarModelsService, CarBrandsService,
@@ -16,7 +17,8 @@ const service = {
     VehicleService, TripService,
     UserService, PassengerService,
     MainApi, AppSettingsService,
-    ReportsService
+    ReportsService,
+    NotificationService
 }
 
 export default service;

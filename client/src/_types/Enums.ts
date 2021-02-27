@@ -17,7 +17,8 @@ export enum DriverState {
     Offline,
     LookingForTrip,
     GoingToMeetPassenger,
-    OnTrip
+    OnTrip,
+    active
 }
 
 export enum DriverRating {

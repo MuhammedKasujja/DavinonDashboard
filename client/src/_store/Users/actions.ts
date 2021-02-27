@@ -3,14 +3,16 @@ import { AuthActionTypes, AUTH_USER, LOGOUT } from "./types"
 import service from "../../App/services/index";
 
 export const login = (password: string, email: string) => async (dispatch: Dispatch<AuthActionTypes>) => {
-    // const res = await service.UserService.signin(email, password)
-    // console.log(res.data)
+    const res = await service.UserService.login(email, password)
+    console.log(res.data)
     // dispatch({
     //     type: AUTH_USER,
     //     payload:res.data
     // })
     const date =  Date.now().toString()
-    localStorage.setItem('loginDate','2021-01-07 18:19:06.915285')//new Date().toISOString())
+    localStorage.setItem('token',res.data.token)//new Date().toISOString())
+    localStorage.setItem('uid', res.data.uid)
+    localStorage.setItem('lastLoginDate', res.data.lastSignInTime)
 
     dispatch({
         type:AUTH_USER,

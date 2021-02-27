@@ -17,6 +17,7 @@ import RegisterCar from "../Trucks/RegisterCar";
 import CustomInputText from "App/components/CustomInput/input";
 import { Driver } from "_store/driver/types";
 import { DriverRating, DriverState } from "_types/Enums";
+import DatepickerInput from "App/components/CustomInput/DatepickerInput";
 
 const styles: StyleRules = {
     cardCategoryWhite: {
@@ -46,7 +47,7 @@ const DriverRegisterComponent: React.FC<any> = () => {
     const [gender, setGender] = useState('');
     const [email, setEmail] = useState('');
     const [telephone, setTelephone] = useState('+256');
-    const [dob] = useState('');
+    const [dateofBirth, setDateofBirth] = useState('');
     const [nin, setNin] = useState('')
     const [city, setCity] = useState('')
 
@@ -55,7 +56,7 @@ const DriverRegisterComponent: React.FC<any> = () => {
         telephone: telephone,
         email: email,
         gender: gender,
-        birthday: dob,
+        birthday: dateofBirth,
         nin: nin,
         city: city,
         charisma: DriverRating.Good,
@@ -63,8 +64,8 @@ const DriverRegisterComponent: React.FC<any> = () => {
         trucks: [],
         status: DriverState.Offline,
         photo: {
-            isOnline: false,
-            url: 'assets/images/usuario/avatar_user.png'
+            isOnline: true,
+            url: 'http://www.example.com/12345678/photo.png'
         },
         createdOn: Date.now(),
         isOnline: true,
@@ -173,6 +174,19 @@ const DriverRegisterComponent: React.FC<any> = () => {
                                 </GridItem>
                             </GridContainer>
                             <GridContainer>
+
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <GenderInput onGenderChanged={(val: string) => {
+                                        setGender(val)
+                                        // console.log(val)
+                                    }} />
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <DatepickerInput onDateChanged={(date: string) => {
+                                        console.log(date)
+                                        setDateofBirth(date)
+                                    }} />
+                                </GridItem>
                                 <GridItem xs={12} sm={12} md={4}>
                                     <CustomInputText handleChange={(val) => {
                                         setNin(val);
@@ -186,18 +200,6 @@ const DriverRegisterComponent: React.FC<any> = () => {
                                             value: `${nin}`
                                         }}
                                     />
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={4}>
-                                    <GenderInput onGenderChanged={(val: string) => {
-                                        setGender(val)
-                                        // console.log(val)
-                                    }} />
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={4}>
-                                    {/* <DatepickerInput onDateChanged={(date) => {
-                                        // console.log(date)
-                                        setDoB(date)
-                                    }} /> */}
                                 </GridItem>
                             </GridContainer>
                         </CardBody>

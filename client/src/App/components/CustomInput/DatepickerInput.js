@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
+import 'date-fns'
 import DateFnsUtils from '@date-io/date-fns';
 import format from "date-fns/format";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -8,20 +9,24 @@ export default function DatepickerInput(props) {
     const { onDateChanged } = props
 
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePicker
-                disableFuture
-                openTo="year"
-                format="dd/MM/yyyy"
-                label="Date of birth"
-                views={["year", "month", "date"]}
-                value={selectedDate}
-                onChange={(date)=>{
-                    handleDateChange(date)
-                    onDateChanged(format(date,"dd/MM/yyyy"))
-                }}
-            />
-        </MuiPickersUtilsProvider>
+        <Fragment>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                    disableFuture
+                    // openTo="year"
+                    format="dd/MM/yyyy"
+                    // variant="inline"
+                    label="Date of birth"
+                    // views={["year", "month", "date"]}
+                    value={selectedDate}
+                    onChange={(date) => {
+                        handleDateChange(date)
+                        onDateChanged(format(date, "dd/MM/yyyy"))
+                    }}
+                />
+            </MuiPickersUtilsProvider>
+        </Fragment>
+
     );
 }
 

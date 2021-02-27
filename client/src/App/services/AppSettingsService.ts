@@ -10,12 +10,19 @@ class AppSettingsService {
         })
     }
     // admin
-    fetchAppSettings(){
+    fetchAppSettings() {
         return restConnector({
             url: `${baseLink}`,
             method: "GET",
         });
     }
+
+    // saveAppConfig() {
+    //     return restConnector({
+    //         url: `/config/saveSettings`,
+    //         method: "POST",
+    //     });
+    // }
 }
 
 export default new AppSettingsService();

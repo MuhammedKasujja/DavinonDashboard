@@ -10,7 +10,7 @@ import IconMenu from '@material-ui/icons/Menu'
 
 import HeaderDemo from './HeaderDemo'
 
-import HeaderSearch from './HeaderSearch'
+// import HeaderSearch from './HeaderSearch'
 import HeaderNotifications from './HeaderNotifications'
 import HeaderProfile from './HeaderProfile'
 
@@ -35,7 +35,7 @@ const Header = ({ onToggle }: HeaderProps) => {
         </IconButton>
         {/* <HeaderDemo /> */}
         <div className={classes.actions}>
-          <HeaderSearch />
+          {/* <HeaderSearch /> */}
           <HeaderNotifications />
           <HeaderProfile />
         </div>

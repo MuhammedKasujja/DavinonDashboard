@@ -1,7 +1,7 @@
 import { FETCH_TRIP_NOTIFICATIONS, FETCH_DRIVER_NOTIFICATIONS, NotificationState, NotificationActionTypes, FETCH_PAYMENTS_NOTIFICATION } from "./types"
 
 const initialState: NotificationState = {
-    notifications: { type: 'New', total: 0, message: '', state: 'new' },
+    notifications: [],
     activeDrivers: [],
     payments: []
 

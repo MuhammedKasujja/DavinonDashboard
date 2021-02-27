@@ -89,9 +89,6 @@ function CouponForm({ success }: CouponFormProps) {
 
     })
 
-    const newLocal = <DatepickerInput onDateChanged={(date: string) => {
-        console.log({ NewDate: date });
-    }} />;
     return (
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
@@ -120,33 +117,16 @@ function CouponForm({ success }: CouponFormProps) {
                                     }} />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <CustomInputText id="Activation_Date"
-                                    formControlProps={{
-                                        fullWidth: true
-                                    }}
-                                    inputProps={{
-                                        value: `${activationDate}`
-                                    }}
-                                    labelText='Activation Date'
-                                    handleChange={(val) => {
-                                        setActivationDate(val)
-                                    }} />
-                                {/* {newLocal} */}
+                                <DatepickerInput onDateChanged={(date: string) => {
+                                    setActivationDate(date)
+                                }} />
                             </GridItem>
                         </GridContainer>
                         <GridContainer>
                             <GridItem xs={6} sm={6} md={4}>
-                                <CustomInputText id="Expiry_Date"
-                                    formControlProps={{
-                                        fullWidth: true
-                                    }}
-                                    inputProps={{
-                                        value: `${expiryDate}`,
-                                    }}
-                                    labelText='Expiry Date'
-                                    handleChange={(val) => {
-                                        setExpiryDate(val)
-                                    }} />
+                                <DatepickerInput onDateChanged={(date: string) => {
+                                    setExpiryDate(date)
+                                }} />
                             </GridItem>
                             <GridItem xs={6} sm={6} md={4}>
                                 <CustomInputText id="Usage_Limit"

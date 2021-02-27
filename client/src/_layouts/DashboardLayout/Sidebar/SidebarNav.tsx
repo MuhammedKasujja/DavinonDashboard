@@ -83,7 +83,7 @@ const SidebarNav = (props: SidebarNavProps) => {
       Icon: WalletIcon,
     },
     {
-      name: 'Trip Reviews',
+      name: 'Reviews',
       link: '/admin/trip-reviews',
       Icon: ReviewIcon,
     },
