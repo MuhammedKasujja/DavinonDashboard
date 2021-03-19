@@ -28,14 +28,24 @@ export const fetchAllDrivers = () => async (dispatch: Dispatch<DriverActionTypes
     })
 }
 
-export const saveDriver = (driver: any)=> async (dispatch: Dispatch<DriverActionTypes>) =>  {
-        service.DriverService.addDriver(driver)
-            .then((res) => {
-                console.log(res.data)
-                // dispatch(addDriverSuccesss(true));
-            }).catch((err) => {
-                console.log(err);
-            })
+export const attachVehicleToDriver = (truckid: string, driverid: string) => async (dispatch: Dispatch<DriverActionTypes>) => {
+    service.DriverService.addVehicleToDriver(truckid, driverid)
+        .then((res) => {
+            console.log(res.data)
+            // dispatch(addDriverSuccesss(true));
+        }).catch((err) => {
+            console.log(err);
+        })
+}
+
+export const saveDriver = (driver: any) => async (dispatch: Dispatch<DriverActionTypes>) => {
+    service.DriverService.addDriver(driver)
+        .then((res) => {
+            console.log(res.data)
+            // dispatch(addDriverSuccesss(true));
+        }).catch((err) => {
+            console.log(err);
+        })
 }
 
 export function AddDrivers(driver: Driver): DriverActionTypes {
@@ -45,7 +55,7 @@ export function AddDrivers(driver: Driver): DriverActionTypes {
     }
 }
 
-export function AddLocalDriver(driver: Driver): DriverActionTypes {
+export function AddLocalDriver(driver: Driver | undefined): DriverActionTypes {
     return {
         type: ADD_LOCAL_DRIVER,
         payload: driver

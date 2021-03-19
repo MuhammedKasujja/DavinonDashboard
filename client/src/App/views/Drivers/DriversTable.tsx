@@ -113,6 +113,19 @@ const DriversTable: React.FC<any> = () => {
             },
             accessor: 'status',
           },
+          {
+            Header: 'Actions',
+            Cell: ({ row }) => {
+              return (
+                <Link to={{
+                  pathname: `/admin/drivers/view`,
+                }}>
+                  <Chip color='primary' label={'View'} />
+                </Link>
+              )
+            },
+            accessor: 'oneSignalPlayerID'
+          }
           // {
           //   Header: 'Status',
           //   Cell: ({ value }: { value: boolean }) => {
@@ -137,6 +150,7 @@ const DriversTable: React.FC<any> = () => {
 
   React.useEffect(() => {
     dispatch(GetDrivers())
+    dispatch(AddLocalDriver(undefined))
   }, [])
 
   const saveData = () => {
@@ -145,8 +159,8 @@ const DriversTable: React.FC<any> = () => {
 
   const handleAddDriver = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>) => {
-      console.log({'event':event}) 
-      history.push('/admin/drivers/new') 
+      console.log({ 'event': event })
+      history.push('/admin/drivers/new')
     },
     []
   )

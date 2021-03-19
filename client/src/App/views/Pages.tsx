@@ -21,6 +21,7 @@ import TripDetails from "./Trips/TripDetails"
 import TripPaymentReport from './Reports/TripPaymentReport'
 import TripsReviews from './Reports/TripsReviewsReport'
 import MapWrapper from "./Maps/index"
+import DriverInfo from "./Drivers/DriverInfo"
 
 const dashboardRoutes = ({
     DashboardPage, TripsMap, TripsTable, DriverProfile, //Drivers,
@@ -40,7 +41,8 @@ const dashboardRoutes = ({
     SettingsPage,
     GeneralSettings,
     TripPaymentReport,
-    TripsReviews
+    TripsReviews,
+    DriverInfo
 });
 
 export default dashboardRoutes;

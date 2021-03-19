@@ -14,6 +14,7 @@ import { authReducer } from './Users/reducers'
 import { settingsReducer } from './AppSettings/reducers'
 import { reportsReducer } from './Reports/reducers'
 import thunk from "redux-thunk"
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 const rootReducer = combineReducers({
     drivers: driverReducer,
@@ -33,4 +34,4 @@ const rootReducer = combineReducers({
 
 export type RootStore = ReturnType<typeof rootReducer>
 
-export const Store = createStore(rootReducer, applyMiddleware(thunk))
+export const Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))

@@ -146,6 +146,7 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
                 brand: make,
                 model: model,
                 type: carType,
+                driverId:null,
                 seats: seats,
                 cylinders: cylinders,
                 gearbox: gearbox,

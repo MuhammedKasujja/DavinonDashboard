@@ -34,18 +34,13 @@ exports.addTruck = function (req) {
             //console.log(data.docs)
             data.docs.forEach(element => {
                 console.log(element.data())
-            });
+            }); 
         })
 
     }).catch(e => {
         console.log("Error adding data: " + e)
     })
 }
-
-// exports.addDriver = function (data) {
-//     console.log(data)
-//     console.log("called from repo")
-// }
 
 exports.addVehicleType = (data) => {
     console.log(data)
@@ -285,7 +280,7 @@ exports.login = async (email, password) => {
         .get()
     // var snaps = []
     // snapshot.forEach(doc => {
-    //     snaps.push(doc.data())
+    //     snaps.push(doc.data()) 
     // })
     // snapshot.docs[0]
     return !snapshot.empty ? snapshot.docs[0].data() : null

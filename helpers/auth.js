@@ -1,7 +1,7 @@
 // const admin = require("firebase-admin")
 const firebase = require("firebase/app")
 require("firebase/auth");
-
+// firebase.firestore.FieldValue.
 const { auth } = require('./utils/config')
 
 const serviceAccount = require("../davinon-rides-firebase-adminsdk.json")
@@ -22,9 +22,14 @@ exports.createUserWithEmailAndPassword = (email, password) => {
 
 exports.linkAccount = (user, email) => {
     var provider = new auth.GoogleAuthProvider();
-    firebase.auth().signInWithEmailAndPassword(email, 'kasmud.2').then(data => {
+    auth.createUserWithEmailAndPassword('kfjdf', 'jkghfgif').then((details)=>{
+        return details.user.getIdToken();
+    }).then((token)=>{
+
+    })
+    auth.signInWithEmailAndPassword(email, 'kasmud.2').then(data => {
         data.user.linkWithRedirect(provider).then(() => {
-            firebase.auth().getRedirectResult().then(function (result) {
+            auth.getRedirectResult().then(function (result) {
                 if (result.credential) {
                     // Accounts successfully linked.
                     var credential = result.credential;
@@ -65,7 +70,6 @@ exports.linkAccount = (user, email) => {
     //     console.log({ ErrorLinkingAccount: error })
     // });
 }
-
 // admin.auth().createUser({
 //     email: 'al.kasmud.2@gmail.com',
 //     emailVerified: false,

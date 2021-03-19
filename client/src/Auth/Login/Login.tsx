@@ -25,39 +25,41 @@ const Login: React.FC = () => {
   }, [])
   return (
     <PageContainer>
-      <Card >
-        <CardHeader color="primary">
-        <h4>DavinonRides</h4>
-        </CardHeader>
-        <CardBody>
-          <CustomInputText id="Email"
-            formControlProps={{
-              fullWidth: true
-            }}
-            inputProps={{
-              value: `${email}`,
-              type: 'email'
-            }}
-            labelText='Email'
-            handleChange={(val) => {
-              setEmail(val)
-            }} />
-          <CustomInputText id="Password"
-            formControlProps={{
-              fullWidth: true
-            }}
-            inputProps={{
-              value: `${password}`,
-              type: 'password'
-            }}
-            labelText='Password'
-            handleChange={(val) => {
-              setPassword(val)
-            }} />
-          <TSButton color="primary" onClick={handleLogin} ><Link to={'/admin/dashboard'}>Login</Link></TSButton>
-        </CardBody>
-      </Card>
-    </PageContainer>)
+      <div style={{ marginRight: '200', marginLeft: '200' }}>
+        <Card >
+          <CardHeader>
+            <h4>DavinonRides</h4>
+          </CardHeader>
+          <CardBody>
+            <CustomInputText id="Email"
+              formControlProps={{
+                fullWidth: true
+              }}
+              inputProps={{
+                value: `${email}`,
+                type: 'email'
+              }}
+              labelText='Email'
+              handleChange={(val) => {
+                setEmail(val)
+              }} />
+            <CustomInputText id="Password"
+              formControlProps={{
+                fullWidth: true
+              }}
+              inputProps={{
+                value: `${password}`,
+                type: 'password'
+              }}
+              labelText='Password'
+              handleChange={(val) => {
+                setPassword(val)
+              }} />
+            <TSButton color="primary" onClick={handleLogin} ><Link to={'/admin/dashboard'}>Login</Link></TSButton>
+          </CardBody>
+        </Card>
+      </div >
+    </PageContainer >)
 }
 
 export default Login

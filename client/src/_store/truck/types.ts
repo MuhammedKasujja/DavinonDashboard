@@ -13,6 +13,7 @@ export interface Vehicle extends Photo {
     brand: string,
     model: string,
     type: string,
+    driverId:string | null
     seats?: string,
     cylinders?: string,
     gearbox?: string,

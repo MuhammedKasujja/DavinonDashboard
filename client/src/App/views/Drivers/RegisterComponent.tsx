@@ -61,7 +61,6 @@ const DriverRegisterComponent: React.FC<any> = () => {
         city: city,
         charisma: DriverRating.Good,
         oneSignalPlayerID: '',
-        trucks: [],
         status: DriverState.Offline,
         photo: {
             isOnline: true,

@@ -22,16 +22,17 @@ exports.createDriver = (req, res) => {
             const ref = db.collection(COLLECTION_DRIVERS).doc(userRecord.user.uid);
             data.driver.id = ref.id;
             ref.set(data.driver).then((_) => {
-                data.vehicle['driverId'] = data.driver.id
+                data.vehicle.driverId = data.driver.id
                 var vehicleRef = db.collection(COLLECTION_VEHICLES).doc();
                 data.vehicle.id = vehicleRef.id;
                 vehicleRef.set(data.vehicle).then(() => {
                     console.log({ AddingNewVehicle: 'this is awesome' })
+                    ref.set({ vehicle: data.vehicle }, { merge: true });
                 }).catch(e => {
                     console.error({ 'VehicleError': `Could not save data ${e}` })
                 })
                 console.info({ 'Success': `Driver successfull registered` })
-                return res.status(201).json({ message: "Driver successfull registered" })
+                return res.status(201).json({ message: "Driver successfull registered", driverId: ref.id })
             }).catch(e => {
                 console.error('Error creating new driver:', error);
                 return res.status(201).json({ error: 'Could not create driver' })

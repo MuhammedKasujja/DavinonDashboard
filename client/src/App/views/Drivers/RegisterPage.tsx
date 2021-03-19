@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import DriverRegisterComponent from "./RegisterComponent"
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
@@ -27,18 +27,22 @@ class Register extends React.Component {
 export default Register
 
 const MainActions: React.FC<any> = () => {
-    const handleClick = () => { }
+
+    const [registerWithCar, setRegisterWithCar] = useState(false)
+    const handleClick = () => {
+        setRegisterWithCar(!registerWithCar)
+    }
     return (<div>
         <Chip
             label="Register"
             onClick={handleClick}
             // variant="outlined"
-            color="primary"
+            color={registerWithCar ? "primary" : 'secondary'}
         />
         <Chip
             label="Register with Vehicle"
             onClick={handleClick}
-            variant="outlined"
+            variant={registerWithCar ? "outlined" : 'default'}
         />
     </div>)
 }

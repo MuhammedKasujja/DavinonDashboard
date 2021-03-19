@@ -16,6 +16,7 @@ const Admin = ({ match }: AdminProps) => {
       <Route exact path={`${match.url}/trips/info`} component={dashboardRoutes.TripDetails} />
       <Route path={`${match.url}/trips`} component={dashboardRoutes.FancyTripsTable} />
       <Route path={`${match.url}/drivers/new`} component={dashboardRoutes.RegisterDriver} />
+      <Route exact path={`${match.url}/drivers/view`} component={dashboardRoutes.DriverInfo} />
       <Route exact path={`${match.url}/drivers/edit/:name`} component={dashboardRoutes.DriverProfile} />
       <Route path={`${match.url}/drivers`} component={dashboardRoutes.DriversTable} />
       <Route path={`${match.url}/passengers`} component={dashboardRoutes.PassengersTable} />

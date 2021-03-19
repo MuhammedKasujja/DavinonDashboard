@@ -43,6 +43,7 @@ exports.streamTripNotifications = (req, res) => {
 exports.markTripNotificationsAsRead = (req, res) => {
     // console.log({ Notifications: req.body })
     const batch = db.batch()
+    // notificationId [List of notification Ids]
     req.body.forEach(notificationId => {
         const notification = db.doc(`/${COLLECTION_TRIP_NOTIFICATIONS}/${notificationId}`)
         batch.update(notification, { seers: admin.firestore.FieldValue.arrayUnion(req.user.uid) })

@@ -17,7 +17,7 @@ export interface Driver extends Photo {
     gender?: string,
     status: number,
     isOnline: boolean
-    trucks:Vehicle[]
+    trucks?:Vehicle[]
     city:string
     oneSignalPlayerID:string
     nin:string

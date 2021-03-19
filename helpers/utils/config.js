@@ -20,8 +20,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth()
-
-const db = admin.firestore()
+const db = firebase.firestore()
 
 module.exports = {
     db, admin, auth

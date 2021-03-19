@@ -11,17 +11,15 @@ import CardHeader from "../../components/Card/CardHeader";
 import CardAvatar from "../../components/Card/CardAvatar";
 import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { addLocalDriver } from "../../redux/actions/driversActions";
-import TrucksTable from "../Trucks/TrucksTable";
-import { isTableFiltered } from "../../redux/actions/tableActions";
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import TSButton from "App/components/CustomButtons/TSButton";
 import { RootStore } from "_store/store";
+import DialogAttachCarToDriver from "../Trucks/DialogAttachCarToDriver";
 
 const styles: StyleRules = {
     cardCategoryWhite: {
@@ -62,17 +60,15 @@ const labels: { [index: string]: string } = {
 
 const useStyles = makeStyles(() => createStyles(styles))
 
-const DriverProfile: React.FC<any> = (props) => {
+const DriverProfile: React.FC<any> = () => {
     const classes = useStyles();
-    const dispatch = useDispatch()
     const driver = useSelector(
         (state: RootStore) => state.drivers.localDriver,
     )
 
-    const [truck, setTruck] = React.useState(driver && driver.trucks[0])
+    const [truck, setTruck] = React.useState(driver && (driver.trucks && driver.trucks[0]))
     const [rating, setRating] = React.useState<number | null>(driver === undefined ? null : driver.charisma);
     const [hover, setHover] = React.useState(-1);
-    const [showAttachVehicle, setshowAttachVehicle] = React.useState(false);
 
     React.useEffect(() => {
         // console.log('component mounted')
@@ -80,8 +76,8 @@ const DriverProfile: React.FC<any> = (props) => {
         // return a function to execute at unmount
         return () => {
             // console.log('component will unmount')
-            dispatch(addLocalDriver(null))
-            dispatch(isTableFiltered(false))
+            //dispatch(addLocalDriver(null))
+            //dispatch(isTableFiltered(false))
         }
     }, []) // notice the empty array
     return (
@@ -232,13 +228,15 @@ const DriverProfile: React.FC<any> = (props) => {
                             <h4 className={classes.cardTitle}>{driver != null ? driver.name : ''}</h4>
                             {(truck && truck !== undefined && truck.id !== null) ?
                                 <div className={classes.cardCategory}> {truck.brand}  {truck.model}  {truck.type}</div> :
-                                <TSButton color="primary" onClick={() => {
-                                    setshowAttachVehicle(!showAttachVehicle)
-                                    props.dispatch(isTableFiltered(true))
-                                }}>
-                                    {!showAttachVehicle ? 'Attach A car' : 'Cancle'}
+                                // <TSButton color="primary" onClick={() => {
+                                //     setshowAttachVehicle(!showAttachVehicle)
+                                //     // props.dispatch(isTableFiltered(true))
+                                // }}>
+                                //     {!showAttachVehicle ? 'Attach A car' : 'Cancle'}
 
-                                </TSButton>}
+                                // </TSButton>
+                                <DialogAttachCarToDriver />
+                            }
                             <h4 className={classes.cardTitle}>{truck ? `${truck.licencePlate}` : ''}</h4>
                             {/* <p className={classes.description}>
                                 Don{"'"}t be scared of the truth because we need to restart the
@@ -246,7 +244,7 @@ const DriverProfile: React.FC<any> = (props) => {
                 I love Rick Owens’ bed design but the back is...
               </p> */}
                             {truck ?
-                                <TSButton color="primary" onClick={(e) => {
+                                <TSButton color="primary" onClick={() => {
                                     setTruck(undefined)
                                 }}>Remove car</TSButton>
                                 : <div />}
@@ -255,7 +253,7 @@ const DriverProfile: React.FC<any> = (props) => {
                     </Card>
                 </GridItem>
             </GridContainer>
-            {showAttachVehicle ? <TrucksTable /> : <div />}
+            {/* {showAttachVehicle ? <TrucksTable /> : <div />} */}
 
         </PageContainer>
     );
