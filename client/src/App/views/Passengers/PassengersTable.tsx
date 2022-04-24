@@ -20,28 +20,7 @@ const FancyPassengersTable: React.FC<any> = () => {
     )
     const columns:Array<Column<Client>> = React.useMemo(
         () => [
-            {
-                Header: "#",
-                // The cell can use the individual row's getToggleRowSelectedProps method
-                // to the render a checkbox
-                Cell: ({ value }: { value: string }) => {
-                    // console.log({ RowData: row.original })
-                    // creating a custom cell
-                    return (
-                        <Link to={{
-                            pathname: `/admin/passengers/edit/${value}`,
-                            // state: {
-                            //     driverId: props.driver.id
-                            // }
-                        }} onClick={() => {
-                            console.log("Yeah yes yes...........")
-                            //   props.dispatch(addLocalDriver(row.original))
-                        }}><EditIcon />
-                        </Link>
-                    )
-                },
-                accessor: 'id',
-            },
+            
             {
                 Header: 'Name',
                 accessor: 'name',
@@ -71,6 +50,28 @@ const FancyPassengersTable: React.FC<any> = () => {
                     )
                 },
                 accessor: 'status',
+            },
+            {
+                Header: "Actions",
+                // The cell can use the individual row's getToggleRowSelectedProps method
+                // to the render a checkbox
+                Cell: ({ value }: { value: string }) => {
+                    // console.log({ RowData: row.original })
+                    // creating a custom cell
+                    return (
+                        <Link to={{
+                            pathname: `/admin/passengers/edit/${value}`,
+                            // state: {
+                            //     driverId: props.driver.id
+                            // }
+                        }} onClick={() => {
+                            console.log("Yeah yes yes...........")
+                            //   props.dispatch(addLocalDriver(row.original))
+                        }}>View
+                        </Link>
+                    )
+                },
+                accessor: 'id',
             },
         ],
         []

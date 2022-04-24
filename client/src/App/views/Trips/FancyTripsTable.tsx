@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import Chip from "@material-ui/core/Chip"
-import EditIcon from "@material-ui/icons/Edit"
+import EditIcon from "@material-ui/icons/ViewAgenda"
 import { Link } from 'react-router-dom'
 
 import { TripStatus } from "_types/Enums"
@@ -26,17 +26,8 @@ const FancyTripsTable: React.FC<any> = () => {
         //     () => 
         [
             {
-                Header: '#',
-                Cell: ({ row}) => (
-                    <Link to={{
-                        pathname: `/admin/trips/info`,
-                    }} onClick={() => {
-                        console.log("Yeah yes yes...........",row.original)
-                        dispatch(AddLocalTrip(row.original))
-                    }}><EditIcon/>
-                    </Link>
-                ),
-                accessor: 'id',
+                Header:'Date',
+                accessor:'createdOn'
             },
             {
                 Header: 'From',
@@ -121,10 +112,20 @@ const FancyTripsTable: React.FC<any> = () => {
                 // accessor: 'passenger',
                 accessor: (i: Trip) => i.passenger,
             },
-            // {
-            //     label: 'Client',
-            //     name: 'passenger.name',
-            // },
+            {
+                Header: 'Actions',
+                Cell: ({ row}) => (
+                    <Link to={{
+                        pathname: `/admin/trips/info`,
+                    }} onClick={() => {
+                        console.log("Yeah yes yes...........",row.original)
+                        dispatch(AddLocalTrip(row.original))
+                    }}>View
+                        {/* <EditIcon/> */}
+                    </Link>
+                ),
+                accessor: 'id',
+            },
         ]
     // []
     // )

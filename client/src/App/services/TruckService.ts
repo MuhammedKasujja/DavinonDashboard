@@ -19,7 +19,7 @@ class TruckService {
 
   fetchSingleTruck(truckID: string) {
     return restConnector({
-      url: `${baseLink}/${truckID}`,
+      url: `${baseLink}/view/${truckID}`,
       method: "GET",
     });
   }
@@ -44,9 +44,10 @@ class TruckService {
     })
   }
 
-  deleteTruck(token: string) {
+  deleteTruck(id: string) {
     return restConnector({
-      url: `${baseLink}/delete?id=${token}`,
+      // url: `${baseLink}/delete?id=${token}`,
+      url: `${baseLink}/delete/${id}`,
       method: "DELETE",
     });
   }

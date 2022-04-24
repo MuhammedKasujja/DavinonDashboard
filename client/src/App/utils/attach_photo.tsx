@@ -6,13 +6,27 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import AttachFileIcon from "@material-ui/icons/AddAPhoto"
+import CameraIcon from '@material-ui/icons/Camera'
 
 const useStyles = makeStyles({
     root: {
         maxWidth: 345,
     },
+    cameraIcon: {
+        // position: "fixed", transform: "translate(-50%, -50%)",
+        // top: '50%', left: '50%', 
+    },
+    box: {
+        height: 100,
+        width:345,
+        display: "flex",
+        border: "1px solid black",
+        padding: 8
+    },
+    centerBox: {
+        justifyContent: "center",
+        alignItems: "center"
+    }
 });
 
 export interface ImageProps {
@@ -64,7 +78,7 @@ export function AttackPhoto(props: ImageProps) {
         //         </div>
         //     </CardContent>
     }
-
+    const icon = selectedImage === undefined ? <CameraIcon className={classes.cameraIcon} /> : <div />;
     return (
         <Card className={classes.root}>
             <CardActionArea>
@@ -78,6 +92,7 @@ export function AttackPhoto(props: ImageProps) {
                 <CardContent>
                     <input type="file" accept="image/*" id="file" ref={inputFile}
                         style={{ display: "none" }} onChange={onChange} />
+                    {icon}
                 </CardContent>
             </CardActionArea>
             {selectedImage &&

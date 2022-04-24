@@ -48,6 +48,15 @@ class DriverService {
       data: { truckId: truckID, driverId: driverID }
     })
   }
+
+  fetchDriverDetails(driverID: string) {
+    return restConnector({
+      url: `${baseLink}/${driverID}`,
+      method: "GET",
+    });
+  }
 }
+
+
 
 export default new DriverService();

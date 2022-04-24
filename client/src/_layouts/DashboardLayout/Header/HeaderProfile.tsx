@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
@@ -23,19 +23,29 @@ import { RootStore } from '_store/store'
 
 
 const HeaderProfile = () => {
+  const history = useHistory()
   const authState = useSelector(
     (state: RootStore) => state.auth,
   )
+
   const dispatch = useDispatch()
 
   const handleLogout = () => {
     setAnchorEl(null)
     dispatch(logout())
   }
+  React.useEffect(()=>{
+    if(!authState.user){
+       history.replace('/')
+    }
+  },[authState.user])
+  
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
-  if (!authState.user) {
+  
+  const localUser = localStorage.getItem('user')
+  const user = localUser !== null ? JSON.parse(localUser) : undefined
+  if (!user) {
     return <div className={clsx('headerProfile', classes.headerProfile)} />
   }
 
@@ -46,16 +56,18 @@ const HeaderProfile = () => {
   function handleClose() {
     setAnchorEl(null)
   }
+  
   const userAvatar = () => {
-    if (authState.user && authState.user.firstName)
+    if (user && user.username)
       return (<Avatar
         className={classes.profileAvatar}
-        alt={authState.user.firstName && authState.user.firstName.charAt(0)}
+        alt={user && user.username.charAt(0)}
       // src="https://avatars3.githubusercontent.com/u/3959008?v=3&s=40"
       />)
     else
       return (<></>)
   }
+  
   return (
     <div className={clsx('headerProfile', classes.headerProfile)}>
       <IconButton
@@ -68,7 +80,7 @@ const HeaderProfile = () => {
         onClick={handleClick}
       >
         {userAvatar()}
-        <span className={classes.profileName}>{authState.user && authState.user.displayName}</span>
+        <span className={classes.profileName}>{user && user.username}</span>
         <IconArrowDropDown />
       </IconButton>
       <Menu
@@ -106,7 +118,7 @@ const HeaderProfile = () => {
           <ListItemText primary="Settings" />
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleLogout} component={Link} to="/">
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <IconLogout />
           </ListItemIcon>

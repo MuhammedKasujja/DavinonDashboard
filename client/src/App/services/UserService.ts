@@ -43,7 +43,7 @@ class UserService extends HttpClient {
   }
 
   // admin
-  fetchUsersFromDB() {
+  fetchUsers() {
     return restConnector({
       url: `${baseLink}`,
       method: "GET",

@@ -10,6 +10,7 @@ import PassengersTable from "./Passengers/PassengersTable"
 import TrucksTable from "./Trucks/TrucksTable"
 import RegisterTruck from "./Trucks/RegisterTruck"
 import GoogleMap from "./Maps/DriversMap"
+import Reports from "./Reports"
 // import Drivers from "../components/Table/PagingTable.js";
 import RouterBreadcrumbs from "./Dashboard/BreadCrumbs.js";
 import DashboardPage from "./Dashboard/Dashboard"
@@ -22,6 +23,7 @@ import TripPaymentReport from './Reports/TripPaymentReport'
 import TripsReviews from './Reports/TripsReviewsReport'
 import MapWrapper from "./Maps/index"
 import DriverInfo from "./Drivers/DriverInfo"
+import TruckDetails from "./Trucks/TruckDetails"
 
 const dashboardRoutes = ({
     DashboardPage, TripsMap, TripsTable, DriverProfile, //Drivers,
@@ -42,7 +44,9 @@ const dashboardRoutes = ({
     GeneralSettings,
     TripPaymentReport,
     TripsReviews,
-    DriverInfo
+    DriverInfo,
+    Reports,
+    TruckDetails
 });
 
 export default dashboardRoutes;

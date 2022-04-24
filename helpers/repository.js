@@ -1,4 +1,4 @@
-const { db, admin, auth } = require('./utils/config')
+const { db, admin, firestore } = require('./utils/config')
 const {
     COLLECTION_DRIVERS,
     COLLECTION_VEHICLES,
@@ -7,34 +7,27 @@ const {
     COLLECTION_PAYMENTS,
     COLLECTION_VEHICLE_TYPES } = require("./utils/CollectionTypes")
 const {
-    TRIP_STATUS_OPEN,
-    TRIP_STATUS_AWAITING_DRIVER,
-    TRIP_STATUS_CANCELED,
-    TRIP_STATUS_FINISHED,
-    TRIP_STATUS_DRIVER_PATH,
-    TRIP_STATUS_STARTED } = require("./utils/Constants")
-const { GeoFirestore, GeoQuery, GeoQuerySnapshot } = require('geofirestore')
+    TRIP_STATUS_OPEN } = require("./utils/Constants")
+const { GeoFirestore } = require('geofirestore')
 
 exports.addTruck = function (req) {
     const geofirestore = new GeoFirestore(db)
     const geocollection = geofirestore.collection(COLLECTION_VEHICLES)
-    const ref = geocollection.doc()
-
     geocollection.add({
         //id: ref.id,
         name: req.body.name,
         plate_number: req.body.plate_number,
         category: req.body.category,
         available: true,
-        coordinates: new admin.firestore.GeoPoint(parseFloat(req.body.lat), parseFloat(req.body.lng))
+        coordinates: new firestore.GeoPoint(parseFloat(req.body.lat), parseFloat(req.body.lng))
     }).then(doc => {
         console.log("Truck added:" + doc.id)
-        const query = geocollection.near({ center: new admin.firestore.GeoPoint(parseFloat(req.body.lat), parseFloat(req.body.lng)), radius: 100 })
+        const query = geocollection.near({ center: new firestore.GeoPoint(parseFloat(req.body.lat), parseFloat(req.body.lng)), radius: 100 })
         query.get().then((data) => {
             //console.log(data.docs)
             data.docs.forEach(element => {
                 console.log(element.data())
-            }); 
+            });
         })
 
     }).catch(e => {
@@ -47,7 +40,7 @@ exports.addVehicleType = (data) => {
     //Getting the next document ID
     var ref = db.collection(COLLECTION_VEHICLE_TYPES).doc();
     data.id = ref.id;
-    ref.set(data).then(doc => {
+    ref.set(data).then(() => {
         console.log("Vehicle added")
     }).catch(e => {
         console.log("Error adding data: " + e)
@@ -57,8 +50,7 @@ exports.addVehicleType = (data) => {
 
 exports.getFirebaseData = function getFirebaseData() {
     return db.collection(COLLECTION_TRIPS).get().then((snapshot) => {
-        var data = snapshot.docs
-        snapshot.docs.forEach(element => {
+        snapshot.docs.forEach(() => {
 
         });
         return snapshot.docs;
@@ -67,6 +59,20 @@ exports.getFirebaseData = function getFirebaseData() {
 
 exports.fetchData = (collection) => {
     return getData(collection);
+}
+
+exports.fetchDataById = (collection, id) => {
+    console.log({ 'TruckIdProps': id })
+    return getDataById(collection, id);
+}
+
+exports.deleteDataById = async (collection, id) => {
+    try {
+        await db.collection(collection).doc(id).delete()
+        return { message: 'Deleted', success: true }
+    } catch (err) {
+        return { message: 'Could not delete', success: false, error: err.toString() }
+    }
 }
 
 function getData(collection) {
@@ -79,24 +85,39 @@ function getData(collection) {
     });
 }
 
+async function getDataById(collection, id) {
+    try {
+        const snapshot = await db.collection(collection).where('id', '==', id).limit(1).get()
+        // console.log({ snapshot, 'Size': snapshot.size, "Doc": snapshot.docs[0].data() })
+        if (snapshot.empty) {
+            return null
+        }
+        return snapshot.docs[0].data();
+    } catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
 exports.getGrandTotalPayments = async () => {
     const snapshot = await db.collection(COLLECTION_PAYMENTS).select('amount').get()
     var total = 0
     snapshot.forEach(doc => {
         total += doc.data()['amount']
-        console.log({ 'Doc': doc.data(), 'Total': total })
+        // console.log({ 'Doc': doc.data(), 'Total': total })
     })
+    console.log({ 'PaymentsTotal': total })
     return total
 }
 
 exports.attachVehicleToDriver = (data) => {
     const ref = db.collection(COLLECTION_VEHICLES).doc(data.truckId)
-    return ref.set({ driverId: data.driverId }, { merge: true }).then((p) => {
+    return ref.set({ driverId: data.driverId }, { merge: true }).then(() => {
         console.log({ 'Updated': "Yes Yes Yes" })
     });
 }
 
-exports.postData = async (collection, data, res) => {
+exports.postData = async (collection, data) => {
     console.log(data)
     var ref;
     if (data.id === null || data.id === undefined) {
@@ -116,7 +137,7 @@ exports.postData = async (collection, data, res) => {
     })
 }
 
-exports.addBrandModel = async (data, res) => {
+exports.addBrandModel = async (data) => {
     //console.log(data)
     //Getting the next document ID
     console.log({ 'id': data['id'], 'model': data['models'][0] })
@@ -129,7 +150,7 @@ exports.addBrandModel = async (data, res) => {
     // }
     data.createdOn = new Date().toISOString()
     try {
-        const doc = await ref.set({ 'models': admin.firestore.FieldValue.arrayUnion(data['models'][0]) }, { merge: true })
+        const doc = await ref.set({ 'models': firestore.FieldValue.arrayUnion(data['models'][0]) }, { merge: true })
         console.log({ "Data added": doc })
         return { "message": "successfull" }
     } catch (e) {
@@ -224,7 +245,7 @@ exports.streamActiveDrivers = (res) => {
 }
 
 //// Firebase joining collections /////
-exports.joinsCollectionsHandler = async (res) => {
+exports.joinsCollectionsHandler = async () => {
     const binsRef = await db.collection(COLLECTION_DRIVERS).get();
     const binData = binsRef.docs.map(doc => doc.data());
 
@@ -241,9 +262,9 @@ exports.joinsCollectionsHandler = async (res) => {
     return data;
     // res.json(data)
 }
-
 // Creates a client
 exports.uploadedFile = (bucketName, filename) => {
+    storage.bucket()
     const storage = admin.storage()
     async function uploadFile() {
         // Uploads a local file to the bucket

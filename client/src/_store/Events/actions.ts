@@ -9,12 +9,13 @@ import {
     FETCH_PAYMENTS_NOTIFICATION
 } from "./types"
 const url = process.env.REACT_APP_BASE_URL
-const loginDate = localStorage.getItem('lastLoginDate')
-const userId = localStorage.getItem('uid')
+const strUser = localStorage.getItem('user')
+const user =strUser? JSON.parse(strUser) :null
+// const userId = localStorage.getItem('uid')
 
 ///// listen to TripNotifications document
 export const fetchTripNotification = () => async (dispatch: Dispatch<NotificationActionTypes>) => {
-    const eventStream = new EventSource(`${url}/trips/notifications/${userId}/${loginDate}`)
+    const eventStream = new EventSource(`${url}/trips/notifications/${user.userId}/${user.lastLogin}`)
     eventStream.addEventListener("NewNotification", ((event: MessageEvent) => {
         const data = JSON.parse(event.data);
         console.log({ 'Notification': data.notifications });
@@ -26,7 +27,7 @@ export const fetchTripNotification = () => async (dispatch: Dispatch<Notificatio
 ///// listen to the trips document
 export const fetchTripNotificationOld = () => async (dispatch: Dispatch<NotificationActionTypes>) => {
 
-    const eventStream = new EventSource(`${url}/trips/stream/${loginDate}`)
+    const eventStream = new EventSource(`${url}/trips/stream/${user.lastLogin}`)
     eventStream.addEventListener("tripStateAdded", ((event: MessageEvent) => {
         const data = JSON.parse(event.data);
         // console.log(data);
@@ -65,7 +66,7 @@ export const fetchActiveDriversNotification = () => async (dispatch: Dispatch<No
 
 export const fetchNewPaymentsNotification = () => async (dispatch: Dispatch<NotificationActionTypes>) => {
     // const eventStream = new EventSource(`${url}/payments/stream/ZZ1XBw5nQKOTBTNA6oPCTonapvA3`)
-    const eventStream = new EventSource(`${url}/payments/notifications/${userId}/${loginDate}`)
+    const eventStream = new EventSource(`${url}/payments/notifications/${user.userId}/${user.lastLogin}`)
     eventStream.addEventListener("NewPayment", ((event: MessageEvent) => {
         const data = JSON.parse(event.data);
         console.log({ 'Payments': data });

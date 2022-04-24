@@ -48,7 +48,7 @@ const MainOrders: React.FC<any> = () => {
           </TableBody>
         </Table>
         <div className={classes.seeMore}>
-          <Link color="primary" href="#">
+          <Link color="primary" href="#/admin/trips">
             See more orders
           </Link>
         </div>

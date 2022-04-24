@@ -12,14 +12,14 @@ import CardAvatar from "../../components/Card/CardAvatar";
 import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import { useSelector } from "react-redux"
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import TSButton from "App/components/CustomButtons/TSButton";
 import { RootStore } from "_store/store";
 import DialogAttachCarToDriver from "../Trucks/DialogAttachCarToDriver";
+import DriverRating from "App/components/DriverRating";
+import Typography from "@material-ui/core/Typography";
+import DriverTripsTable from "./DriverTripsTable";
 
 const styles: StyleRules = {
     cardCategoryWhite: {
@@ -67,8 +67,6 @@ const DriverProfile: React.FC<any> = () => {
     )
 
     const [truck, setTruck] = React.useState(driver && (driver.trucks && driver.trucks[0]))
-    const [rating, setRating] = React.useState<number | null>(driver === undefined ? null : driver.charisma);
-    const [hover, setHover] = React.useState(-1);
 
     React.useEffect(() => {
         // console.log('component mounted')
@@ -208,23 +206,7 @@ const DriverProfile: React.FC<any> = () => {
 
                         </CardAvatar>
                         <CardBody profile>
-                            <Box component="fieldset" mb={3} borderColor="transparent">
-                                <div className={classes.root}>
-                                    <Rating size="large"
-                                        name="hover-feedback"
-                                        value={rating}
-                                        precision={0.5}
-                                        onChange={(_, newValue) => {
-                                            setRating(newValue);
-                                        }}
-                                        onChangeActive={(_, newHover) => {
-                                            setHover(newHover);
-                                        }}
-                                        emptyIcon={<StarBorderIcon fontSize="inherit" />}
-                                    />
-                                    {rating !== null && <Box ml={2}>{labels[hover !== -1 ? hover : rating]}</Box>}
-                                </div>
-                            </Box>
+                            <DriverRating rate={driver === undefined ? null : driver.charisma} />
                             <h4 className={classes.cardTitle}>{driver != null ? driver.name : ''}</h4>
                             {(truck && truck !== undefined && truck.id !== null) ?
                                 <div className={classes.cardCategory}> {truck.brand}  {truck.model}  {truck.type}</div> :
@@ -253,8 +235,12 @@ const DriverProfile: React.FC<any> = () => {
                     </Card>
                 </GridItem>
             </GridContainer>
-            {/* {showAttachVehicle ? <TrucksTable /> : <div />} */}
-
+            <GridContainer>
+                <GridItem xs={12} sm={12} md={12} >
+                    <Typography>Trips</Typography>
+                    {driver && <DriverTripsTable trips={[]} />}
+                </GridItem>
+            </GridContainer>
         </PageContainer>
     );
 }

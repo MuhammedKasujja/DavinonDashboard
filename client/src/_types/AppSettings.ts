@@ -1,13 +1,37 @@
 export const SAVE_SETTINGS = "SAVE_SETTINGS"
 export const FETCH_SETTINGS = "FETCH_SETTINGS"
+export const LOADING = "LOADING"
+export const ERROR = "ERROR"
+export const SUCCESS ="SUCCESS"
+
+export interface AppState{
+    isLoading:boolean,
+    error?:string,
+    success?:string
+}
 
 export interface AppSettingsState {
     settings: AppSettings 
 }
 
+export interface AppStateLoading {
+    type: typeof LOADING
+    payload: boolean
+}
+
+export interface AppStateError {
+    type: typeof ERROR
+    payload?: string
+}
+
+export interface AppStateSuccess {
+    type: typeof SUCCESS
+    payload?: string
+}
+
 export interface SaveAppSettingsAction {
     type: typeof SAVE_SETTINGS
-    payload: AppSettings | undefined
+    payload?: AppSettings
 }
 
 export interface FetchAppSettingsAction {

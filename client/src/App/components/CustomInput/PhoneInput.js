@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Fragment } from "react"
 import MaterialUiPhoneNumber from "material-ui-phone-number"
 import FormControl from "@material-ui/core/FormControl";
 import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle";
@@ -21,6 +21,7 @@ export default function PhoneInput(props) {
         fullWidth: true
     }
     return (
+        <Fragment>
         <FormControl {...formControlProps}
             className={formControlProps.className + " " + classes.formControl}>
             <MaterialUiPhoneNumber
@@ -37,5 +38,6 @@ export default function PhoneInput(props) {
                 inputProps={inputProps}
             />
         </FormControl>
+        </Fragment>
     )
 }

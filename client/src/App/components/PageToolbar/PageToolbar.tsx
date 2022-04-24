@@ -19,7 +19,7 @@ export interface PageToolbarProps {
   }
 }
 
-const PageToolbar: React.FC<PageToolbarProps> = (props: PageToolbarProps) => {
+const PageToolbar: React.FC<PageToolbarProps> = (props) => {
   const classes = useStyles()
   const userClasses = props.classes || {}
 

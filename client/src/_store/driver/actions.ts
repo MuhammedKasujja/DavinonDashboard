@@ -61,3 +61,8 @@ export function AddLocalDriver(driver: Driver | undefined): DriverActionTypes {
         payload: driver
     }
 }
+
+export const fetchDriverInfor =(driverId: string)=> async (dispatch: Dispatch<DriverActionTypes>) =>{
+    const res = await service.DriverService.fetchDriverDetails(driverId);
+    
+}

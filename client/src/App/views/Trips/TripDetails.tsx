@@ -1,13 +1,18 @@
-import { Avatar, Card, CardContent, ListItemAvatar, Table, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Avatar, Button, Card, CardContent, ListItemAvatar, Table, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import TableBody from '@material-ui/core/TableBody'
 import GridContainer from 'App/components/Grid/GridContainer'
 import GridItem from 'App/components/Grid/GridItem'
 import React from 'react'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import { useDispatch, useSelector } from "react-redux"
 import { RootStore } from '_store/store'
 import { AddLocalTrip } from '_store/trips/actions'
 import PageContainer from "../../components/PageContainer/index"
+import SectionHeader from 'App/components/SectionHeader'
+import DetailListItem from 'App/components/DetailListItem'
 
 const TripDetails: React.FC<any> = () => {
 
@@ -20,27 +25,26 @@ const TripDetails: React.FC<any> = () => {
         if (trip && trip.driver && trip.driver.name) {
             return (
                 <GridContainer>
-                    <GridItem xs={12} md={6} lg={6}>
-                        <Card style={{ marginTop: "10px", width:"100%"}} >
-                            <Typography variant="h5" color="textSecondary" gutterBottom>
-                                Driver
-                            </Typography>
+                    <GridItem xs={12} md={12} lg={12}>
+                        <Card style={{ marginTop: "10px", width: "100%" }} >
+                            <SectionHeader title='Driver' />
+
                             {trip && <CardContent >
-                                <ListItemAvatar>
-                                    <Avatar alt={trip.driver.name} src={trip.driver.photo.url} style={{width:"120px", height:"120px"}}/>
-                                </ListItemAvatar>
-                                <Typography variant="h6" color="textSecondary" gutterBottom>
-                                    Name {trip.driver.name}
-                                </Typography>
-                                <Typography variant="h6" color="textSecondary" gutterBottom>
-                                    telephone: {trip.driver.telephone}
-                                </Typography>
-                                <Typography variant="h6" color="textSecondary" gutterBottom>
-                                    Email: {trip.driver.email}
-                                </Typography>
-                                <Typography variant="h6" color="textSecondary" gutterBottom>
-                                    Status: {trip.driver.status}
-                                </Typography>
+                                <List>
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar alt={trip.driver.name} src={trip.driver.photo.url} style={{ width: "120px", height: "120px" }} />
+                                        </ListItemAvatar>
+                                        <ListItemText>
+                                            {trip.driver.name}<br />
+                                            {trip.driver.telephone}<br />
+                                            {trip.driver.email}
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem>
+                                        <TripVehicle />
+                                    </ListItem>
+                                </List>
                             </CardContent>
                             }
                         </Card>
@@ -48,20 +52,39 @@ const TripDetails: React.FC<any> = () => {
                 </GridContainer>)
         }
         else {
-            return <Typography variant="h6" color="textSecondary" gutterBottom>
-                Assign driver
-          </Typography>
+            return <GridContainer>
+                <GridItem xs={12} md={12} lg={12}>
+                    <Card style={{ marginTop: "15px" }}>
+                        <div style={{ height: "200px" }}>
+                            <Button variant="outlined" color="primary" onClick={() => { }}>
+                                Assign Driver
+                            </Button>
+                        </div>
+                    </Card>
+                </GridItem>
+            </GridContainer>
         }
-
     }
 
+    const TripVehicle = () => {
+        const vehicle = (trip !== undefined
+            && trip.driver !== undefined
+            && trip.driver.trucks != undefined)
+            ? trip.driver.trucks[0]
+            : undefined;
+        return (<React.Fragment>
+            {vehicle && (<div>
+                <DetailListItem label="Brand" value={vehicle.brand} />
+                <DetailListItem label="Year" value={vehicle.year} />
+                <DetailListItem label="Color" value={vehicle.color} />
+                <DetailListItem label="Drive Train" value={vehicle.driveTrain} />
+            </div>)
+            }
+        </React.Fragment>)
+    }
+
+
     React.useEffect(() => {
-        // console.log('component mounted')
-
-        // setTruck(props.driver && props.driver.trucks[0])
-        // console.log({ Truck: truck })
-        // setDriver(props.driver)
-
         // return a function to execute at unmount
         return () => {
             // console.log('component will unmount')
@@ -75,57 +98,36 @@ const TripDetails: React.FC<any> = () => {
             <GridContainer>
                 <GridItem xs={12} md={6} lg={6}>
                     <Card style={{ height: "100%" }}>
-                        <Typography variant="h5" color="textSecondary" gutterBottom>
-                            Trip Details
-                        </Typography>
-                        {trip && <CardContent style={{ height: "100%" }}>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Code {trip.code}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Origin: {trip.originAddress}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Destination: {trip.destinationAddress}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Payment Method: {trip.paymentMethod}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Total Distance: {trip.distance}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Total Duration: {trip.duration}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Status: {tripStatus(trip.status)}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                Type: {tripType(trip.type)}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                CreatedAt: {trip.createdOn.toISOString}
-                            </Typography>
-                        </CardContent>
+                        <SectionHeader title="Trip Details" />
+                        {trip &&
+                            <CardContent style={{ height: "100%" }}>
+                                <List>
+                                    <DetailListItem label="Code" value={trip.code} />
+                                    <DetailListItem label="Origin" value={trip.originAddress} />
+                                    <DetailListItem label="Destination" value={trip.destinationAddress} />
+                                    <div><DetailListItem label="Distance" value={trip.distance} />
+                                        <DetailListItem label="Duration" value={trip.duration} />
+                                    </div>
+                                    <DetailListItem label="Payment Method" value={trip.paymentMethod} />
+                                    <DetailListItem label="Status" value={tripStatus(trip.status)} />
+                                    <DetailListItem label="Type" value={tripType(trip.type)} />
+                                    <DetailListItem label="Date" value={trip.createdOn.toString()} />
+                                </List>
+                            </CardContent> 
                         }
-                    </Card>
+                    </Card>  
                 </GridItem>
-                <GridItem xs={12} md={6} lg={6}>
+                <GridItem xs={12} md={6} lg={6}> 
                     <Card>
-                        <Typography variant="h6" color="textSecondary" gutterBottom>
-                            Passenger Info
-                        </Typography>
-                        {trip && <CardContent>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                {trip.passenger.name}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                {trip.passenger.email}
-                            </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                {trip.passenger.telephone}
-                            </Typography>
-                        </CardContent>
+                        <SectionHeader title='Passenger' />
+                        {trip &&
+                            <CardContent>
+                                <List>
+                                    <DetailListItem label="Name" value={trip.passenger.name} />
+                                    <DetailListItem label="Email" value={trip.passenger.email} />
+                                    <DetailListItem label="Telephone" value={trip.passenger.telephone} />
+                                </List>
+                            </CardContent>
                         }
                     </Card>
                     <RenderDriver />
@@ -161,47 +163,47 @@ const TripDetails: React.FC<any> = () => {
     );
 }
 
-const tripType =(type:number)=>{
-    if(type === 0){
-      return 'Passenger'
+const tripType = (type: number) => {
+    if (type === 0) {
+        return 'Passenger'
     }
-    else if(type === 1){
-      return 'Cargo'
+    else if (type === 1) {
+        return 'Cargo'
     }
-    else if(type === 2){
-      return 'Trip Cargo'
+    else if (type === 2) {
+        return 'Trip Cargo'
     }
-    else if(type === 3){
-      return 'Trip'
-    }else{
-      return ''
+    else if (type === 3) {
+        return 'Trip'
+    } else {
+        return ''
     }
-  }
+}
 
-  const tripStatus =(status:number)=>{
-    if(status === 0){
-      return 'New'
+const tripStatus = (status: number) => {
+    if (status === 0) {
+        return 'New'
     }
-    else if(status === 1){
-      return 'Accepted'
+    else if (status === 1) {
+        return 'Accepted'
     }
-    else if(status === 2){
-      return 'Waiting'
+    else if (status === 2) {
+        return 'Waiting'
     }
-    else if(status === 3){
-      return 'Driver Path'
-    }else if(status === 4){
-      return 'OnTrip'
+    else if (status === 3) {
+        return 'Driver Path'
+    } else if (status === 4) {
+        return 'OnTrip'
     }
-    else if(status === 5){
-      return 'Completed'
+    else if (status === 5) {
+        return 'Completed'
     }
-    else if(status === 6){
-      return 'Canceled'
+    else if (status === 6) {
+        return 'Canceled'
     }
-    else{
-      return ''
+    else {
+        return ''
     }
-  }
+}
 
 export default TripDetails

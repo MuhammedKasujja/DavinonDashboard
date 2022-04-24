@@ -49,12 +49,12 @@ const SidebarNav = (props: SidebarNavProps) => {
       Icon: IconDrivers,
       items: [
         {
-          name: 'View Drivers',
-          link: '/admin/drivers',
+          name: 'Add Drivers',
+          link: '/admin/drivers/new',
         },
         {
-          name: 'Add New',
-          link: '/admin/drivers/new',
+          name: 'View Drivers',
+          link: '/admin/drivers',
         },
       ],
     },

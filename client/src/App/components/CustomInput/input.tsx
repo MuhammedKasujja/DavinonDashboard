@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,6 +10,7 @@ import Clear from "@material-ui/icons/Clear";
 import Check from "@material-ui/icons/Check";
 // core components
 import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(styles);
 
@@ -50,34 +51,39 @@ export default function CustomInputText(props: CustomInputProps) {
         [classes.marginTop]: labelText === undefined
     });
     return (
-        <FormControl
-            {...formControlProps}
-            className={formControlProps.className + " " + classes.formControl}
-        >
-            {labelText !== undefined ? (
-                <InputLabel
-                    className={classes.labelRoot + labelClasses}
-                    htmlFor={id}
-                    {...labelProps}
-                >
-                    {labelText}
-                </InputLabel>
-            ) : null}
-            <Input onChange={(e) => handleChange(e.target.value)}
-                classes={{
-                    root: marginTop,
-                    disabled: classes.disabled,
-                    underline: underlineClasses
-                }}
-                id={id}
-                {...inputProps}
-            />
-            {error ? (
-                <Clear className={classes.feedback + " " + classes.labelRootError} />
-            ) : success ? (
-                <Check className={classes.feedback + " " + classes.labelRootSuccess} />
-            ) : null}
-        </FormControl>
+        <div>
+            {/* <Typography className={classes.labelRoot + labelClasses}>{labelText}</Typography> */}
+            <FormControl
+                {...formControlProps}
+                className={formControlProps.className + " " + classes.formControl}
+                // variant="outlined"
+            >
+                {labelText !== undefined ? (
+                    <InputLabel
+                        className={classes.labelRoot + labelClasses}
+                        htmlFor={id}
+                        {...labelProps}
+                    >
+                        {labelText}
+                    </InputLabel>
+                ) : null}
+                <Input onChange={(e) => handleChange(e.target.value)}
+                    classes={{
+                        root: marginTop,
+                        disabled: classes.disabled,
+                        underline: underlineClasses
+                    }}
+                    id={id}
+                    // variant="outlined"
+                    {...inputProps}
+                />
+                {error ? (
+                    <Clear className={classes.feedback + " " + classes.labelRootError} />
+                ) : success ? (
+                    <Check className={classes.feedback + " " + classes.labelRootSuccess} />
+                ) : null}
+            </FormControl>
+        </div>
     );
 }
 

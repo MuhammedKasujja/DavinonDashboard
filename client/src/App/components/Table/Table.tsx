@@ -28,6 +28,7 @@ import {
 } from 'react-table'
 
 import { camelToWords, useDebounce, useLocalStorage } from 'utils'
+import Card from '../Card/Card'
 import { FilterChipBar } from './FilterChipBar'
 import { fuzzyTextFilter, numericTextFilter, GlobalFilter } from './filters'
 import { ResizeHandle } from './ResizeHandle'
@@ -203,7 +204,7 @@ export function Table<T extends object>(props: PropsWithChildren<Table<T>>): Rea
   // }
 
   return (
-    <>
+    <Card>
       {/* <GlobalFilter<T> instance={instance}/> */}
     
       <TableToolbar instance={instance} {...{ onAdd, onDelete, onEdit, handleOnAdd }} />
@@ -290,6 +291,6 @@ export function Table<T extends object>(props: PropsWithChildren<Table<T>>): Rea
         </div>
       </div>
       <TablePagination<T> instance={instance} />
-    </>
+    </Card>
   )
 }

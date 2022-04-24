@@ -2,21 +2,24 @@ import React from "react";
 import { createStyles, makeStyles, StyleRules } from "@material-ui/core/styles";
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
-import CustomInput from "../../components/CustomInput/CustomInput";
-import Button from "../../components/CustomButtons/Button";
 import Card from "../../components/Card/Card";
 import CardAvatar from "../../components/Card/CardAvatar";
 import CardBody from "../../components/Card/CardBody";
-import CardFooter from "../../components/Card/CardFooter";
 import { useDispatch, useSelector } from "react-redux"
-import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { addLocalDriver } from "../../redux/actions/driversActions";
-import { isTableFiltered } from "../../redux/actions/tableActions";
 import PageContainer from "../../components/PageContainer/index"
 import PageToolbar from "../../components/PageToolbar/index"
 import { RootStore } from "_store/store";
+import TripVehicle from "../Trips/TripVehicle";
+import SectionHeader from "App/components/SectionHeader";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import CardContent from "@material-ui/core/CardContent";
+import { Table } from "App/components/Table";
+import { Trip } from "_store/trips/types";
+import DriverTripsTable from "./DriverTripsTable";
+import DriverRating from "App/components/DriverRating";
+import { Typography } from "@material-ui/core";
 
 const styles: StyleRules = {
     cardCategoryWhite: {
@@ -79,50 +82,53 @@ const DriverInfo: React.FC<any> = () => {
             // dispatch(isTableFiltered(false))
         }
     }, []) // notice the empty array
+    const vehicle = (driver
+        && driver.trucks)
+        ? driver.trucks[0]
+        : undefined;
+
+
     return (
         <PageContainer>
             <PageToolbar
-                title={`Drivers/${driver ? driver.name : ''}`}
+                title={`Drivers/${driver && driver.name}`}
             />
             <GridContainer>
                 <GridItem xs={12} sm={12} md={8}>
                     <Card>
-                        <CardBody>
-                            <div style={{ height: 380 }}></div>
-                        </CardBody>
-                    </Card>
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                    <Card profile>
+                        <SectionHeader title="Driver info" />
                         <CardBody>
                             <div style={{ height: 380 }}>
                                 <CardAvatar>
                                     <a href="#pablo" onClick={e => e.preventDefault()}>
-                                        <img src={driver && driver.photo.url} alt="..." />
+                                        <img src={driver && driver.photo.url} alt={driver && driver.name} />
                                     </a>
                                 </CardAvatar>
                                 <Box component="fieldset" mb={3} borderColor="transparent">
                                 </Box>
-                                <h4 className={classes.cardTitle}>{driver != null ? driver.name : ''}</h4>
-                                <h4 className={classes.cardTitle}>{truck ? `${truck.licencePlate}` : ''}</h4>
+                                <h4 className={classes.cardTitle}>{driver && driver.name}</h4>
+                                <h4 className={classes.cardTitle}>{truck && `${truck.licencePlate}`}</h4>
+                                <DriverRating rate={driver === undefined ? null : driver.charisma}/>
                             </div>
                         </CardBody>
                     </Card>
                 </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                    <Card >
+                        <CardContent >
+                            <div style={{ height: 380 }}>
+                                {vehicle && <List><ListItem><TripVehicle vehicle={vehicle} /></ListItem></List>}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </GridItem>
             </GridContainer>
             <GridContainer>
-                <GridItem xs={12} sm={12} md={6} >
-                    <Card>
-                        <div style={{ height: 350 }}></div>
-                    </Card>
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6} >
-                    <Card>
-                        <div style={{ height: 350 }}></div>
-                    </Card>
+                <GridItem xs={12} sm={12} md={12} >
+                    <Typography>Trips</Typography>
+                    {driver && <DriverTripsTable trips={[]} />}
                 </GridItem>
             </GridContainer>
-
         </PageContainer>
     );
 }

@@ -1,3 +1,4 @@
+import { ERROR, LOADING, SUCCESS } from "_types/AppSettings"
 import {
     VehicleState, VehicleActionTypes, FETCH_CARS, ADD_CAR, ADD_LOCAL_CAR,
     FETCH_TONNAGES, FETCH_TRUCK_BODIES, FETCH_VEHICLE_TYPES
@@ -7,7 +8,11 @@ const initialState: VehicleState = {
     vehicles: [],
     vehicleTypes: [],
     tonnages: [],
-    truckBodies: []
+    truckBodies: [],
+    isLoading: false,
+    error: undefined,
+    success: undefined,
+    localVehicle:undefined
 }
 
 export function vehicleReducer(state = initialState, action: VehicleActionTypes): VehicleState {
@@ -22,7 +27,7 @@ export function vehicleReducer(state = initialState, action: VehicleActionTypes)
         case ADD_LOCAL_CAR:
             return {
                 ...state,
-                vehicles: [...state.vehicles, action.payload]
+                localVehicle:action.payload
             }
         case FETCH_VEHICLE_TYPES:
             return { ...state, vehicleTypes: action.payload }
@@ -35,6 +40,12 @@ export function vehicleReducer(state = initialState, action: VehicleActionTypes)
                 ...state,
                 tonnages: action.payload
             }
+        case LOADING:
+            return { ...state, isLoading: action.payload }
+        case ERROR:
+            return { ...state, error: action.payload }
+        case SUCCESS:
+            return { ...state, success: action.payload }
         default:
             return state;
     }

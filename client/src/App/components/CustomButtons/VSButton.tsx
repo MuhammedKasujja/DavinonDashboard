@@ -1,70 +1,60 @@
 import React from "react";
-// nodejs library that concatenates classes
-import classNames from "classnames";
-import { makeStyles } from "@material-ui/core/styles";
-import Button, { ButtonProps } from "@material-ui/core/Button";
+import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/styles";
+import Button,{ ButtonProps as MuiButtonProps } from "@material-ui/core/Button";
 
-import styles from "../../assets/jss/material-dashboard-react/components/buttonStyle";
+const BootstrapButton = withStyles({
+    root: {
+        boxShadow: 'none',
+        textTransform: 'none',
+        fontSize: 16,
+        padding: '6px 12px',
+        border: '1px solid',
+        lineHeight: 1.5,
+        backgroundColor: '#0063cc',
+        borderColor: '#0063cc',
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '&:hover': {
+            backgroundColor: '#0069d9',
+            borderColor: '#0062cc',
+            boxShadow: 'none',
+        },
+        '&:active': {
+            boxShadow: 'none',
+            backgroundColor: '#0062cc',
+            borderColor: '#005cbf',
+        },
+        '&:focus': {
+            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+        },
+    },
+})(Button);
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        margin: {
+            margin: theme.spacing(1),
+        },
+    }),
+);
 
-export interface Props {
-    color:
-    "primary" |
-    "info" |
-    "success" |
-    "warning" |
-    "danger" |
-    "rose" |
-    "white" |
-    "transparent"
-    ,
-    size: "sm" | "lg",
-    simple?: boolean,
-    round?: boolean,
-    disabled?: boolean,
-    block?: boolean
-    link?: boolean
-    justIcon?: boolean
-    className: string,
-    // use this to pass the classes props from Material-UI
-    muiClasses?: object,
-    children: React.ReactNode
-    // onClick:
-}
-const VSButton: React.FC<Props> = (props) => {
+const CustomButton: React.FC<MuiButtonProps> = ({children,...props}) => {
+
     const classes = useStyles();
-    const {
-        color,
-        round,
-        children,
-        disabled,
-        simple,
-        size = 'sm',
-        block,
-        link,
-        justIcon,
-        className,
-        muiClasses,
-        ...rest
-    } = props;
-    const btnClasses = classNames({
-        [classes.button]: true,
-        [classes[size]]: size,
-        [classes[color]]: color,
-        [classes.round]: round,
-        [classes.disabled]: disabled,
-        [classes.simple]: simple,
-        [classes.block]: block,
-        [classes.link]: link,
-        [classes.justIcon]: justIcon,
-        [className]: className
-    });
     return (
-        <Button {...rest} classes={muiClasses} className={btnClasses}>
+        <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin} {...props}>
             {children}
-        </Button>
+        </BootstrapButton>
     );
 }
-VSButton.defaultProps ={}
-export default VSButton
+export default CustomButton

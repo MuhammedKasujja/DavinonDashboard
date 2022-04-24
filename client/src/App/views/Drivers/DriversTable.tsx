@@ -44,39 +44,45 @@ const DriversTable: React.FC<any> = () => {
     React.useMemo(
       () =>
         [
-          {
-            id: 'selection',
-            Header: "#",
-            width: 35,
-            // The cell can use the individual row's getToggleRowSelectedProps method
-            // to the render a checkbox
-            Cell: ({ row }) => {
-              // console.log({ RowData: row.original })
-              return (
-                <Link to={{
-                  pathname: `/admin/drivers/edit/${row.original.name}`,
-                  // state: {
-                  //     driverId: props.driver.id
-                  // }
-                }} onClick={() => {
-                  console.log("Yeah yes yes...........")
-                  dispatch(AddLocalDriver(row.original))
-                }}><EditIcon />
-                </Link>
-              )
-            },
-            accessor: 'id',
-          },
+          // {
+          //   id: 'selection',
+          //   Header: "#",
+          //   width: 35,
+            
+          //   // The cell can use the individual row's getToggleRowSelectedProps method
+          //   // to the render a checkbox
+          //   Cell: ({ row }) => {
+          //     // console.log({ RowData: row.original })
+          //     return (
+          //       <Link to={{
+          //         pathname: `/admin/drivers/edit/${row.original.name}`,
+          //         // state: {
+          //         //     driverId: props.driver.id
+          //         // }
+          //       }} onClick={() => {
+          //         console.log("Yeah yes yes...........")
+          //         dispatch(AddLocalDriver(row.original))
+          //       }}><EditIcon />
+          //       </Link>
+          //     )
+          //   },
+          //   accessor: 'id',
+          // },
           {
             Header: 'Name',
             accessor: 'name',
-            Cell: ({ value }: { value: string }) => (
-              <>
-                <span role="img" aria-label="mage">
-                  🧙
-            </span>
-                {value}
-              </>
+            Cell: ({ row }) => (
+              <Link to={{
+                pathname: `/admin/drivers/edit/${row.original.name}`,
+                // state: {
+                //     driverId: props.driver.id
+                // }
+              }} onClick={() => {
+                console.log("Yeah yes yes...........")
+                dispatch(AddLocalDriver(row.original))
+              }}>
+                {row.original.name}
+              </Link>
             ),
           },
 
@@ -95,9 +101,10 @@ const DriversTable: React.FC<any> = () => {
           {
             Header: 'Rating',
             accessor: `charisma`,
+            width:80,
           },
           {
-            Header: 'Active',
+            Header: 'Status',
             Cell: ({ value }: { value: Boolean }) => {
               // console.log({ RowData: row.original })
               // creating a custom cell
@@ -119,8 +126,10 @@ const DriversTable: React.FC<any> = () => {
               return (
                 <Link to={{
                   pathname: `/admin/drivers/view`,
+                }} onClick={()=>{
+                  dispatch(AddLocalDriver(row.original))
                 }}>
-                  <Chip color='primary' label={'View'} />
+                  <Chip color='primary' label={'View'} component='a'/>
                 </Link>
               )
             },

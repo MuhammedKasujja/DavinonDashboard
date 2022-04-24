@@ -1,85 +1,86 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { useDispatch, useSelector } from "react-redux"
 import Chip from "@material-ui/core/Chip"
-import EditIcon from "@material-ui/icons/Edit"
-import { Link } from 'react-router-dom'
 
-import { TripStatus } from "_types/Enums"
-import { Position, Trip, Waypoint } from '_store/trips/types'
 import { RootStore } from '_store/store'
-import { AddLocalTrip, fetchTrips } from '_store/trips/actions'
-import { Client } from '_store/Client/types'
 import { Column } from 'react-table'
 import { Table } from 'App/components/Table'
 import PageContainer from 'App/components/PageContainer'
-import PageToolbar from 'App/components/PageToolbar'
+import User from '_types/User'
+import { fetchUsers } from '_store/Users/actions'
+import { useHistory } from 'react-router-dom'
 
 
 const UsersTable: React.FC<any> = () => {
     const dispatch = useDispatch()
-    const tripsState = useSelector(
-        (state: RootStore) => state.trips,
+    const history = useHistory()
+    const usersState = useSelector(
+        (state: RootStore) => state.auth,
     )
-    const columns: Array<Column<Trip>> =
+    const columns: Array<Column<User>> =
         //  React.useMemo(
         //     () => 
         [
             {
                 Header: 'Username',
-                Cell: ({ value }: { value: Position }) => (
-                    <>
-                        {value.name}
-                    </>
-                ),
-                accessor: 'origin',
+                accessor: 'username',
             },
             {
                 Header: 'Email',
-                Cell: ({ value }: { value: Position }) => (
-                    <>
-                        {value.name}
-                    </>
-                ),
-                accessor: 'destination',
+                accessor: 'email',
             },
             {
                 Header: 'Role',
-                accessor: 'distance',
+                accessor: 'role',
             },
             {
-                Header: 'Eabled',
-                accessor: 'duration',
+                Header: 'Enabled',
+                Cell: ({ value }: { value: boolean }) => {
+                    var status = 'Disabled';
+                    if (value === true) {
+                        status = 'Enabled'
+                    }
+                    return (
+                        <>{status}</>
+                    )
+                },
+                accessor: 'enabled',
             },
             {
                 Header: 'Last Active',
-                accessor: 'createdOn',
+                accessor: 'lastLogin',
             },
             {
                 Header: 'Actions',
-                Cell: ({ value }: { value: Waypoint[] }) => {
-                    // console.log({ RowData: row.original })
-                    // creating a custom cell
-                    var checkPoints = value.length - 1
+                Cell: ({ value }: { value: string }) => {
                     return (
-                        <Chip key={value[0].origin.lat} color='primary' style={{ backgroundColor: 'grey' }} label={checkPoints} />
+                        <Chip color='primary' style={{ backgroundColor: 'grey' }} label='Edit' />
                     )
                 },
-                accessor: 'waypoints',
+                accessor: 'userId',
             },
         ]
     // []
     // )
+    const handleAddUser = useCallback(
+        (event: React.MouseEvent<Element, MouseEvent>) => {
+          console.log({ 'event': event })
+        //   history.push('/')
+        },
+        []
+      )
 
     React.useEffect(() => {
-        dispatch(fetchTrips())
+        dispatch(fetchUsers())
     }, [])
 
     return (
         <PageContainer>
-            <Table<Trip>
+            <Table<User>
+                handleOnAdd={handleAddUser}
                 name={'usersTable'}
-                columns={columns} data={tripsState.trips}></Table>
+                columns={columns} data={usersState.users}></Table>
         </PageContainer>
     )
 }

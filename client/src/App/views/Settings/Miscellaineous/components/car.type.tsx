@@ -25,13 +25,12 @@ interface CarTypeCardProps {
 export default function CarTypeCard(props: CarTypeCardProps) {
     const classes = useStyles();
     const { carType } = props
-
     return (
         <Card className={classes.root}>
             <CardActionArea>
                 <CardMedia
                     className={classes.media}
-                    image="/static/images/cards/contemplative-reptile.jpg"
+                    image={carType.avatarUrl}
                     title={carType.name}
                 />
                 <CardContent>

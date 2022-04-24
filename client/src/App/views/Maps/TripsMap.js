@@ -7,8 +7,10 @@ import {
   InfoWindow
 } from "react-google-maps";
 import { compose } from "recompose";
-import {fetchTrips} from "../../../_store/trips/actions"
-import {connect} from "react-redux"
+import { fetchTrips } from "../../../_store/trips/actions"
+import { connect } from "react-redux"
+import { Typography } from "@material-ui/core";
+import PageToolbar from "App/components/PageToolbar";
 const mapStyles = require('./GoogleMapStyles.json')
 
 
@@ -157,24 +159,29 @@ class TripsMap extends React.Component {
   }
 
   render() {
+    const link = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}`
+    console.log({ link })
     var url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBIka0wD5mEerRq7aSbxHqxBGPFYYVkp64"//+GOOGLE_API_KEY;
     return (
-      <MapWithMarkers
-        selectedMarker={this.state.selectedMarker}
-        markers={this.props.trips}
-        onClick={this.handleMarkerClick}
-        googleMapURL={url}
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `100vh` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
-      />
+      <div>
+        <PageToolbar title={`Orders`}/>
+        <MapWithMarkers
+          selectedMarker={this.state.selectedMarker}
+          markers={this.props.trips}
+          onClick={this.handleMarkerClick}
+          googleMapURL={url}
+          loadingElement={<div style={{ height: `100%` }} />}
+          containerElement={<div style={{ height: `100vh` }} />}
+          mapElement={<div style={{ height: `100%` }} />}
+        />
+      </div>
     );
   }
 }
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state) => {
   return {
-     trips : state.trips.trips
+    trips: state.trips.trips
   };
 }
 export default connect(mapStateToProps)(TripsMap);

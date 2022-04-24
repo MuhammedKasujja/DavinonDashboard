@@ -15,8 +15,12 @@ export interface UserSubmissionData {
   displayName?: string
   username?: string | null
   email: string
+  enabled: boolean
   password?: string
-  avatarUrl?: string
+  photoUrl?: string
+  lastLogin:string
+  role:string
+  userId?:string
   globalRole?: UserGlobalRole
 }
 

@@ -3,7 +3,18 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs'
 import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
 
-const PageBreadcrumbs = () => {
+interface PageLinks {
+  name: string,
+  url: string
+}
+
+interface PageBreadcrumbsProps {
+  isCurrentPage: boolean,
+  links: PageLinks[]
+}
+
+const PageBreadcrumbs = (props: PageBreadcrumbsProps) => {
+  const { isCurrentPage, links } = props
   return (
     <Breadcrumbs aria-label="breadcrumb">
       <Link color="inherit" href="/">

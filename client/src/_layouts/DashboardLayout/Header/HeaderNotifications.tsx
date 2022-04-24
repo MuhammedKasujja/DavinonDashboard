@@ -14,7 +14,11 @@ import { connect, useDispatch, useSelector } from "react-redux"
 import { fetchNewPaymentsNotification, fetchTripNotification, makePaymentsNotificationsAsRead } from '_store/Events/actions'
 import { RootStore } from '_store/store'
 import { DefaultToast, ToastProps, ToastProvider, useToasts, ToastConsumer } from 'react-toast-notifications';
-
+import { Button, Divider, Drawer } from '@material-ui/core'
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
+import { PaymentNotification } from '_store/Events/types'
 
 const notifications = [
   {
@@ -47,6 +51,7 @@ const notifications = [
 const HeaderNotifications = () => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [isPaymentsDrawerOpen, setIsPaymentsDrawerOpen] = React.useState<boolean>(false)
   const notificationState = useSelector((state: RootStore) => state.notifications)
   const dispatch = useDispatch()
   // const { addToast } = useToasts();
@@ -62,8 +67,7 @@ const HeaderNotifications = () => {
 
   }
 
-  function handleOpenPaymentsNotificationClick(event: React.MouseEvent<HTMLButtonElement>) {
-    // setAnchorEl(event.currentTarget)
+  function handleOpenPaymentsNotificationClick() {
     let notificationsIds: Array<string> = [];
     notificationState.payments.forEach(not => {
       notificationsIds.push(not.id);
@@ -71,6 +75,13 @@ const HeaderNotifications = () => {
     if (notificationsIds.length > 0)
       dispatch(makePaymentsNotificationsAsRead(notificationsIds))
 
+  }
+
+  const paymnetNotificationItem = (not: PaymentNotification) => {
+    const title = not.amount + " " + not.paymentMethod;
+    return <ListItem button key={not.id}>
+      <ListItemText primary={title} secondary={not.tripCode} />
+    </ListItem>
   }
 
   function handleClose() {
@@ -91,6 +102,52 @@ const HeaderNotifications = () => {
     //   () => { },
     // )
   })
+
+  const toggleDrawer = (openPaymentNotification: boolean, open: boolean) => (
+    event: React.KeyboardEvent | React.MouseEvent,
+  ) => {
+    // console.log({ "DrawerState": open })
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+
+    setIsPaymentsDrawerOpen(open)
+    if (openPaymentNotification === true)
+      handleOpenPaymentsNotificationClick()
+
+  };
+
+  const list = () => (
+    <div style={{ width: "250px" }}
+      role="presentation"
+      onClick={toggleDrawer(false, false)}
+      onKeyDown={toggleDrawer(false, false)}
+    >
+      <ListItem button key={'header'}>
+        <ListItemIcon><MailIcon /></ListItemIcon>
+        <ListItemText primary="New Payments" />
+      </ListItem>
+      <Divider />
+      <List>
+        {notificationState.payments.map((payment) => (
+           paymnetNotificationItem(payment)
+        ))}
+      </List>
+      {/* <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List> */}
+    </div>
+  );
+
   return (
     <div className={classes.headerNotifications}>
       <Tooltip title='New Payments'>
@@ -101,7 +158,7 @@ const HeaderNotifications = () => {
           className={classes.button}
           // aria-controls="HeaderNotifications"
           aria-haspopup="true"
-          onClick={handleOpenPaymentsNotificationClick}
+          onClick={toggleDrawer(true, true)}
         >
           <Badge badgeContent={notificationState.payments.length} color="primary" classes={{ badge: classes.badge }}>
             <IconNotifications />
@@ -183,9 +240,17 @@ const HeaderNotifications = () => {
           />
         </ListItem>
       </Menu>
+      < React.Fragment key="right">
+        <Drawer anchor='right' open={isPaymentsDrawerOpen} onClose={toggleDrawer(false, false)}>
+          {list()}
+        </Drawer>
+      </React.Fragment>
     </div>
   )
 }
+
+
+
 
 // const HeaderNotificationsContent = () => {
 //   const classes = useStyles()

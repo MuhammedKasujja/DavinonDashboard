@@ -115,7 +115,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                value: `${oneSignalApiKey}`
+                                                value: `${oneSignalApiKey !== undefined ? oneSignalApiKey : ''}`
                                             }}
                                             labelText='OneSignal Api Key'
                                             handleChange={(val) => {
@@ -128,7 +128,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                value: `${email}`,
+                                                value: `${email!== undefined ? email : ''}`,
                                                 type: 'email'
                                             }}
                                             labelText='Email'
@@ -167,7 +167,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                value: `${stripeApiPublishableKey}`
+                                                value: `${stripeApiPublishableKey!== undefined ? stripeApiPublishableKey : ''}`
                                             }}
                                             labelText='Stripe Api Publishable Key'
                                             handleChange={(val) => {
@@ -182,7 +182,7 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                value: `${stripeApiSecretKey}`
+                                                value: `${stripeApiSecretKey !== undefined ? stripeApiSecretKey : ''}`
                                             }}
                                             labelText='Stripe Api Secret Key'
                                             handleChange={(val) => {
@@ -210,7 +210,6 @@ function AppSettingsForm(props: AppSettingsFormProps) {
                         </GridContainer>
                     </CardBody>
                     <CardFooter>
-                        {/* <VSButton color="primary" onClick={handleSaveCar}>Save</VSButton> */}
                         <TSButton color="primary" onClick={handleSaveSettings}>Save</TSButton>
                         <ToastComponent />
                     </CardFooter>

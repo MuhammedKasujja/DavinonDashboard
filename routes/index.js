@@ -10,7 +10,8 @@ const { carTypes } = require('../helpers/utils/CarTypes')
 const { truckBodies } = require('../helpers/utils/TruckBodies')
 const { createUser, login, fetchUsers } = require('../helpers/user')
 const { streamPayments, paymentsNots, markCurrentUserPaymentNotificationsAsRead } = require('../helpers/payments');
-const { createDriver } = require('../helpers/drivers')
+const { createDriver, fetchDriverDetails } = require('../helpers/drivers')
+const { uploader, uploaderFirebase, testCloudStorage, testAdminSdk } = require('../helpers/utils/uploader')
 
 const { COLLECTION_BRANDS,
   COLLECTION_TONNAGES,
@@ -40,6 +41,8 @@ router.post('/payments/notifications/read', FBAuth, markCurrentUserPaymentNotifi
 router.post('/trips/notifications/read', FBAuth, markTripNotificationsAsRead)
 ///
 router.get('/payments/nots', paymentsNots)
+
+router.get('/drivers/infor/:driverId', fetchDriverDetails)
 
 router.get('/', FBAuth, (req, res, next) => {
   res.status(200).json({ "Connected": "Yes yes yes" })
@@ -106,6 +109,19 @@ router.get('/trucks', function (req, res, next) {
   })
 });
 
+router.delete('/trucks/delete/:id', function (req, res, next) {
+  Promise.all([repo.deleteDataById(COLLECTION_VEHICLES, req.params.id)]).then(function (results) {
+    console.log(results[0])
+    res.json(results[0]);
+  })
+});
+
+router.get('/trucks/view/:id', function (req, res, next) {
+  Promise.all([repo.fetchDataById(COLLECTION_VEHICLES, req.params.id)]).then(function (results) {
+    res.json({ truck: results[0] });
+  })
+});
+
 router.get('/trucks/tonnages', function (req, res, next) {
   Promise.all([repo.fetchData(COLLECTION_TONNAGES)]).then(function (results) {
     console.log("Length: " + results[0].length)
@@ -132,18 +148,40 @@ router.get('/add_trucks', function (req, res, next) {
   })
 });
 
-router.post('/trucks/add', function (req, res, next) {
+router.post('/trucks/add', uploader, function (req, res, next) {
+  uploaderFirebase(req, res, next, 'vehicles', function sendData(imgUrl) {
+    if (imgUrl) {
+      const data = req.body
+      data.photo = {
+        isOnline: true,
+        url: imgUrl
+      }
+      repo.postData(COLLECTION_VEHICLES, data, res)
+        .then(msg => res.status(200).json(msg))
+        .catch(err => res.status(500).json(err));
+    } else {
+      res.status(500).json({ error: 'Could not upload image to server' })
+    }
+  })
+})
+
+router.post('/trucks/add-old', function (req, res, next) {
+  // console.log({"ReqBody":req.body});
+  // uploadFile(req, res)
 
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
+      console.log({ "MulterError": req.body });
       return res.status(500).json(err)
     } else if (err) {
+      console.log({ "UploadError": req.body });
       return res.status(500).json(err)
     }
     // console.log({ 'FilePath': `${req.body}` })
     // console.log({ ResponseData: res })
     return res.status(200).send(req.file.path)
   })
+
   // if (!req.files || Object.keys(req.files).length === 0)
   //   console.log({ 'NoFiles': 'Files not found' })
   // else
@@ -266,6 +304,10 @@ router.get('/users/login/:email/:password', function (req, res, _next) {
 
 });
 
+router.get('/users', function (req, res, _next) {
+  fetchUsers(req, res)
+});
+
 router.post('/users/register', function (req, res, next) {
   // console.log(req.body)
   repo.postData(COLLECTION_USERS, req.body, res)
@@ -326,6 +368,24 @@ router.post('/config/saveSettings', function (req, res, next) {
   res.status(200).json({ success: true })
 
 });
+
+router.post('/uploadFirebase', uploader, function (req, res, next) {
+  uploaderFirebase(req, res, next, 'clients', function sendData(path) {
+    console.log({ path })
+    res.status(200)
+      .send({ path });
+  }).then((filepath) => {
+    console.log({ filepath })
+  })
+})
+
+router.get('/test-storage', uploader, function (req, res, next) {
+  testCloudStorage(req, res, next)
+})
+
+router.get('/test-admin-storage', uploader, function (req, res, next) {
+  testAdminSdk(req, res, next)
+})
 
 
 module.exports = router;

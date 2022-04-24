@@ -1,4 +1,5 @@
 import { Photo } from "_store/photo"
+import { AppState, AppStateError, AppStateLoading, AppStateSuccess } from "_types/AppSettings"
 
 export default {}
 export const FETCH_CARS = "FETCH_CARS"
@@ -27,6 +28,7 @@ export interface Vehicle extends Photo {
     tonnage: string,
     truckBody: string,
     status: boolean,
+    images?:string[]
 }
 
 export interface CarOption {
@@ -38,7 +40,8 @@ export interface CarType {
     id: string
     name: string
     types: CarOption[]
-    rank: number
+    rank: number,
+    avatarUrl:string
 }
 
 export interface Tonnage {
@@ -57,11 +60,12 @@ export interface TruckBody {
     rank: number
 }
 
-export interface VehicleState {
+export interface VehicleState extends AppState{
     vehicles: Vehicle[]
     vehicleTypes: CarType[]
     tonnages: Tonnage[]
     truckBodies: TruckBody[]
+    localVehicle:Vehicle | undefined
 }
 
 export interface FetchVehiclesAction {
@@ -76,7 +80,7 @@ export interface AddVehicleAction {
 
 export interface AddLocalVehicle {
     type: typeof ADD_LOCAL_CAR,
-    payload: Vehicle
+    payload?: Vehicle
 }
 
 export interface FetchCarTypesAction {
@@ -95,4 +99,4 @@ export interface FetchTruckTonnagesAction {
 }
 
 export type VehicleActionTypes = FetchVehiclesAction | AddVehicleAction |
-    AddLocalVehicle | FetchCarTypesAction | FetchTruckBodiesAction | FetchTruckTonnagesAction
+    AddLocalVehicle | FetchCarTypesAction | FetchTruckBodiesAction | FetchTruckTonnagesAction | AppStateLoading | AppStateError | AppStateSuccess

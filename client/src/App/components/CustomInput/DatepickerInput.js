@@ -3,6 +3,7 @@ import 'date-fns'
 import DateFnsUtils from '@date-io/date-fns';
 import format from "date-fns/format";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+// import Typography from "@material-ui/core/Typography";
 
 export default function DatepickerInput(props) {
     const [selectedDate, handleDateChange] = useState(new Date());
@@ -10,6 +11,7 @@ export default function DatepickerInput(props) {
 
     return (
         <Fragment>
+            {/* <Typography>Date of birth</Typography> */}
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DatePicker
                     disableFuture

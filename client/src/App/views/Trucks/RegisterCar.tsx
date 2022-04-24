@@ -5,7 +5,6 @@ import { createStyles, makeStyles, StyleRules } from "@material-ui/core/styles";
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
 import Card from "../../components/Card/Card";
-import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import { useState } from "react"
@@ -16,7 +15,7 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import { showToast, ToastComponent } from "../../components/Alerts/Alerts"
 import { useDispatch, useSelector } from "react-redux"
 import { saveDriver } from "../../../_store/driver/actions"
-import { fetchCarTypes, fetchTruckBodies, fetchTruckTonnages } from "../../../_store/truck/actions"
+import { clearError, fetchCarTypes, fetchTruckBodies, fetchTruckTonnages } from "../../../_store/truck/actions"
 import { fetchBrands } from "../../../_store/CarBrands/actions";
 import { saveVehicle } from "../../../_store/truck/actions"
 import { Driver } from "_store/driver/types";
@@ -26,6 +25,8 @@ import { CarOption } from "_store/truck/types";
 import CustomInputText from "App/components/CustomInput/input";
 import TSButton from "App/components/CustomButtons/TSButton";
 import { AttackPhoto } from "App/utils/attach_photo";
+import CircularProgressIndicator from '@material-ui/core/CircularProgress'
+import { Dropzone } from "App/utils/dropzone";
 
 const listCylinders = ['None', '2', '3', '4', '5', '6', '8', '10', '12', '16']
 
@@ -146,7 +147,7 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
                 brand: make,
                 model: model,
                 type: carType,
-                driverId:null,
+                driverId: null,
                 seats: seats,
                 cylinders: cylinders,
                 gearbox: gearbox,
@@ -174,8 +175,27 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
                     const data = new FormData()
                     data.append('file', image, image.name)
                     data.append('licencePlate', plateNumber)
+                    data.append("brand", make)
+                    data.append("model", model)
+                    data.append("type", carType)
+                    // data.append("driverId",'null')
+                    data.append("seats", seats)
+                    data.append("cylinders", cylinders)
+                    data.append("gearbox", gearbox)
+                    data.append("fuel", fuel)
+                    data.append("year", year)
+                    data.append("color", color)
+                    data.append("interior_color", interiorColor)
+                    data.append("tankCapacity", engineCapacity)
+                    data.append("driveTrain", driveTrain)
+                    data.append("tonnage", tonnage)
+                    data.append("truckBody", truckBody)
+                    // photo: {
+                    //     isOnline: true,
+                    //     url: 'assets/images/car/car.webp'
+                    // },
 
-                    dispatch(saveVehicle(car))
+                    dispatch(saveVehicle(data))
                 }
             }
 
@@ -192,6 +212,11 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
         dispatch(fetchTruckBodies())
         dispatch(fetchTruckTonnages())
 
+    }, [])
+    React.useEffect(() => {
+      return (()=>{
+         dispatch(clearError())
+      })
     }, [])
     React.useEffect(() => {
         //// class method {componentDidUpdate}////
@@ -272,6 +297,7 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
         setCarSeatsMenus([])
         store.vehicles.vehicleTypes
             .map((data) => {
+                // console.log({CarType:data.name, Options:data.types})
                 if (data.name === type) {
                     var driveTrainTypes: any[] = [];
                     var listTrains: string[] = []
@@ -312,307 +338,309 @@ const RegisterCar: React.FC<any> = (props: RegisterCarProps) => {
 
     }
     return (
-        <div>
-            <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                    <Card>
-                        <CardHeader color="primary">
+        <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+                <Card>
+                    {/* <CardHeader color="primary">
                             <h4 className={classes.cardTitleWhite}>Car Info</h4>
                             <p className={classes.cardCategoryWhite}>add car details</p>
-                        </CardHeader>
-                        <CardBody>
-                            <GridContainer>
-                                <GridItem xs={12} sm={12} md={8}>
+                        </CardHeader> */}
+                    <CardBody>
+                        <GridContainer>
+                            <GridItem xs={12} sm={12} md={8}>
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        {store.brands.brands !== null ? <AutocompleteInput labelText="Brand"
+                                            id="choose-brand"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            // value={make}
+                                            options={store.brands.brands}
+                                            getLabel={(opt: any) => opt.make}
+                                            handleChange={(val: any) => {
+                                                // console.log(val.id)
+                                                if (val !== null)
+                                                    setMake(val.make)
+                                                else
+                                                    setMake('')
+                                                console.log({ 'TotalModels': listModels(val.id) })
+                                                setDriveTrain('')
+                                            }} /> : <CircularProgress size={20} />}
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <AutocompleteInput labelText="Model"
+                                            id="choose-model"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            value={model}
+                                            options={brandModels}
+                                            getLabel={(model: any) => model.name}
+                                            handleChange={(model: any) => {
+                                                // console.log(val.id)
+                                                if (model !== null) {
+                                                    setModel(model.name)
+                                                    // setCylinders(model.cylinders)
+                                                    // setGearbox(model.gearbox)
+                                                    // setSeats(model.seats)
+                                                    console.log(model.type)
+                                                    setCarType(model.type)
+                                                    // setFuel(model.fuel)
+                                                    onCarTypeSelected(model.type)
+                                                }
+                                                else
+                                                    setModel('')
+
+                                            }}
+                                        />
+                                    </GridItem>
+
+                                </GridContainer>
+
+                                {store.vehicles.vehicleTypes !== null ? <GridContainer>
+                                    <GridItem xs={6} sm={6} md={4}>
+                                        <SelectInput labelText="Car Type"
+                                            handleChange={(val: string) => {
+                                                setCarType(val)
+                                                onCarTypeSelected(val);
+                                            }}
+                                            items={cars}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${carType}`
+                                            }} />
+                                    </GridItem>
+                                    {carType !== 'Truck' ?
+                                        <> <GridItem xs={12} sm={12} md={4}>
+                                            <SelectInput labelText="Drive Train"
+                                                handleChange={(val: string) => {
+                                                    // setDriveTrain(val)
+                                                    setDriveTrain(val)
+                                                    onCarDriveTrainSelected(val)
+                                                }}
+                                                id="choose-drive-train-car"
+                                                value={driveTrain}
+                                                items={driveTrainMenus}
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }} />
+                                        </GridItem>
+                                            <GridItem xs={12} sm={12} md={4}>
+                                                <SelectInput labelText="Seats"
+                                                    handleChange={(val: string) => {
+                                                        setSeats(val)
+                                                    }}
+                                                    id="choose-seats"
+                                                    value={seats}
+                                                    items={carSeatsMenus}
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }} />
+                                            </GridItem></> : <GridItem xs={12} sm={12} md={8}>
+                                            {store.vehicles.truckBodies !== null ?
+                                                <AutocompleteInput labelText="Truck Body"
+                                                    id="choose-truck-body"
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }}
+                                                    options={store.vehicles.truckBodies}
+                                                    getLabel={(opt: any) => opt.name}
+                                                    handleChange={(val: any) => {
+                                                        // console.log(val.id)
+                                                        if (val !== null)
+                                                            setTruckBody(val.name)
+                                                        else
+                                                            setTruckBody('')
+                                                        // console.log({ 'TrackBody': listDriveTrains(val.tonnage) })
+                                                    }} /> : <div></div>}
+                                        </GridItem>}
+                                </GridContainer> : <div />}
+
+                                {carType !== '' && carType === 'Truck' ?
                                     <GridContainer>
                                         <GridItem xs={12} sm={12} md={6}>
-                                            {store.brands.brands !== null ? <AutocompleteInput labelText="Brand"
-                                                id="choose-brand"
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                // value={make}
-                                                options={store.brands.brands}
-                                                getLabel={(opt: any) => opt.make}
-                                                handleChange={(val: any) => {
-                                                    // console.log(val.id)
-                                                    if (val !== null)
-                                                        setMake(val.make)
-                                                    else
-                                                        setMake('')
-                                                    console.log({ 'TotalModels': listModels(val.id) })
-                                                    setDriveTrain('')
-                                                }} /> : <CircularProgress size={20} />}
+                                            {store.vehicles.tonnages !== null ?
+                                                <AutocompleteInput labelText="Tonnage Capacity"
+                                                    id="choose-tonnage-capacity"
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }}
+                                                    options={store.vehicles.tonnages}
+                                                    getLabel={(opt: any) => opt.tonnage}
+                                                    handleChange={(val: any) => {
+                                                        // console.log(val.id)
+                                                        if (val !== null)
+                                                            setTonnage(val.tonnage)
+                                                        else
+                                                            setTonnage('')
+                                                        console.log({ 'TotalTonnages': listDriveTrains(val.tonnage) })
+                                                    }} /> : <div></div>}
                                         </GridItem>
                                         <GridItem xs={12} sm={12} md={6}>
-                                            <AutocompleteInput labelText="Model"
-                                                id="choose-model"
+                                            <AutocompleteInput labelText="Drive Train"
+                                                id="choose-drive-rain"
                                                 formControlProps={{
                                                     fullWidth: true
                                                 }}
-                                                value={model}
-                                                options={brandModels}
-                                                getLabel={(model: any) => model.name}
-                                                handleChange={(model: any) => {
+                                                inputValue={driveTrain}
+                                                options={driveTrainList}
+                                                getLabel={(opt: any) => opt}
+                                                handleChange={(train: any) => {
                                                     // console.log(val.id)
-                                                    if (model !== null) {
-                                                        setModel(model.name)
-                                                        // setCylinders(model.cylinders)
-                                                        // setGearbox(model.gearbox)
-                                                        // setSeats(model.seats)
-                                                        console.log(model.type)
-                                                        setCarType(model.type)
-                                                        // setFuel(model.fuel)
-                                                        onCarTypeSelected(model.type)
+                                                    if (train !== null) {
+                                                        setDriveTrain(train)
                                                     }
                                                     else
-                                                        setModel('')
+                                                        setDriveTrain('')
 
-                                                }}
-                                            />
-                                        </GridItem>
-
-                                    </GridContainer>
-
-                                    {store.vehicles.vehicleTypes !== null ? <GridContainer>
-                                        <GridItem xs={6} sm={6} md={4}>
-                                            <SelectInput labelText="Car Type"
-                                                handleChange={(val: string) => {
-                                                    setCarType(val)
-                                                    onCarTypeSelected(val);
-                                                }}
-                                                items={cars}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${carType}`
                                                 }} />
                                         </GridItem>
-                                        {carType !== 'Truck' ?
-                                            <> <GridItem xs={12} sm={12} md={4}>
-                                                <SelectInput labelText="Drive Train"
-                                                    handleChange={(val: string) => {
-                                                        // setDriveTrain(val)
-                                                        setDriveTrain(val)
-                                                        onCarDriveTrainSelected(val)
-                                                    }}
-                                                    id="choose-drive-train-car"
-                                                    value={driveTrain}
-                                                    items={driveTrainMenus}
-                                                    formControlProps={{
-                                                        fullWidth: true
-                                                    }} />
-                                            </GridItem>
-                                                <GridItem xs={12} sm={12} md={4}>
-                                                    <SelectInput labelText="Seats"
-                                                        handleChange={(val: string) => {
-                                                            setSeats(val)
-                                                        }}
-                                                        id="choose-seats"
-                                                        value={seats}
-                                                        items={carSeatsMenus}
-                                                        formControlProps={{
-                                                            fullWidth: true
-                                                        }} />
-                                                </GridItem></> : <GridItem xs={12} sm={12} md={8}>
-                                                {store.vehicles.truckBodies !== null ?
-                                                    <AutocompleteInput labelText="Truck Body"
-                                                        id="choose-truck-body"
-                                                        formControlProps={{
-                                                            fullWidth: true
-                                                        }}
-                                                        options={store.vehicles.truckBodies}
-                                                        getLabel={(opt: any) => opt.name}
-                                                        handleChange={(val: any) => {
-                                                            // console.log(val.id)
-                                                            if (val !== null)
-                                                                setTruckBody(val.name)
-                                                            else
-                                                                setTruckBody('')
-                                                            // console.log({ 'TrackBody': listDriveTrains(val.tonnage) })
-                                                        }} /> : <div></div>}
-                                            </GridItem>}
-                                    </GridContainer> : <div />}
-
-                                    {carType !== '' && carType === 'Truck' ?
-                                        <GridContainer>
-                                            <GridItem xs={12} sm={12} md={6}>
-                                                {store.vehicles.tonnages !== null ?
-                                                    <AutocompleteInput labelText="Tonnage Capacity"
-                                                        id="choose-tonnage-capacity"
-                                                        formControlProps={{
-                                                            fullWidth: true
-                                                        }}
-                                                        options={store.vehicles.tonnages}
-                                                        getLabel={(opt: any) => opt.tonnage}
-                                                        handleChange={(val: any) => {
-                                                            // console.log(val.id)
-                                                            if (val !== null)
-                                                                setTonnage(val.tonnage)
-                                                            else
-                                                                setTonnage('')
-                                                            console.log({ 'TotalTonnages': listDriveTrains(val.tonnage) })
-                                                        }} /> : <div></div>}
-                                            </GridItem>
-                                            <GridItem xs={12} sm={12} md={6}>
-                                                <AutocompleteInput labelText="Drive Train"
-                                                    id="choose-drive-rain"
-                                                    formControlProps={{
-                                                        fullWidth: true
-                                                    }}
-                                                    inputValue={driveTrain}
-                                                    options={driveTrainList}
-                                                    getLabel={(opt: any) => opt}
-                                                    handleChange={(train: any) => {
-                                                        // console.log(val.id)
-                                                        if (train !== null) {
-                                                            setDriveTrain(train)
-                                                        }
-                                                        else
-                                                            setDriveTrain('')
-
-                                                    }} />
-                                            </GridItem>
-                                        </GridContainer> : <div></div>}
-                                    <GridContainer>
-                                        <GridItem xs={6} sm={6} md={4}>
-                                            <SelectInput labelText="Gearbox"
-                                                handleChange={(val: string) => {
-                                                    setGearbox(val)
-                                                }}
-                                                id="choose-gearbox"
-                                                items={gearboxes}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${gearbox}`
-                                                }}
-                                            />
-                                        </GridItem>
-                                        <GridItem xs={6} sm={6} md={4}>
-                                            <SelectInput labelText="Fuel"
-                                                handleChange={(val: string) => {
-                                                    setFuel(val)
-                                                }}
-                                                // value={fuel}
-                                                id="choose-fuel-type"
-                                                items={fuelTypes}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${fuel}`
-                                                }} />
-                                        </GridItem>
-                                        <GridItem xs={6} sm={6} md={4}>
-                                            <CustomInputText handleChange={(val) => {
-                                                setEngineCapacity(val);
+                                    </GridContainer> : <div></div>}
+                                <GridContainer>
+                                    <GridItem xs={6} sm={6} md={4}>
+                                        <SelectInput labelText="Gearbox"
+                                            handleChange={(val: string) => {
+                                                setGearbox(val)
                                             }}
-                                                labelText="Engine Capacity"
-                                                id="engine-capacity"
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${engineCapacity}`,
-                                                    type: 'number',
-                                                }}
-                                            />
-                                        </GridItem>
-                                    </GridContainer>
-                                    <GridContainer>
-                                        <GridItem xs={3} sm={3} md={4}>
-                                            <SelectInput labelText="Color"
-                                                handleChange={(val: string) => {
-                                                    setColor(val)
-                                                }}
-                                                id="choose-color"
-                                                items={listColors}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${color}`
-                                                }} />
-                                        </GridItem>
-                                        <GridItem xs={3} sm={3} md={4}>
-                                            <SelectInput labelText="Interior Color"
-                                                handleChange={(val: string) => {
-                                                    setInteriorColor(val)
-                                                }}
-                                                id="choose-interior-color"
-                                                items={listColors}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${interiorColor}`
-                                                }}
-                                            />
-                                        </GridItem>
-                                        <GridItem xs={3} sm={3} md={4}>
-                                            <SelectInput labelText="Cylinders"
-                                                handleChange={(val: string) => {
-                                                    setCylinders(val)
-                                                }}
-                                                id="choose-car-cylinders"
-                                                value={cylinders}
-                                                items={carCylinderHeads}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }} />
-                                        </GridItem>
-                                    </GridContainer>
-                                    <GridContainer>
-                                        <GridItem xs={6} sm={6} md={6}>
-                                            <SelectInput labelText="Year"
-                                                handleChange={(val: string) => {
-                                                    setYear(val)
-                                                }}
-                                                value={year}
-                                                id="year"
-                                                items={listYears}
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${year}`
-                                                }} />
-                                        </GridItem>
-                                        <GridItem xs={6} sm={6} md={6}>
-                                            <CustomInputText
-                                                handleChange={(val) => {
-                                                    setPlateNumber(val)
-                                                }}
-                                                labelText="Licence Plate"
-                                                id="Licence-Plate"
-                                                formControlProps={{
-                                                    fullWidth: true
-                                                }}
-                                                inputProps={{
-                                                    value: `${plateNumber}`
-                                                }} />
-                                        </GridItem>
-                                    </GridContainer>
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={4}>
-                                    <AttackPhoto handleChangePhoto={(file) => {
-                                        setImage(file)
-                                        // console.log({ 'file': file?.name })
-                                    }} />
-                                </GridItem>
-                            </GridContainer>
-                        </CardBody>
-                        <CardFooter>
-                            {/* <Button color="primary" onClick={handleSaveCar}>Save</Button> */}
-                            <TSButton color="primary" onClick={handleSaveCar}>Save</TSButton>
-                            <ToastComponent />
-                        </CardFooter>
-                    </Card>
-                </GridItem>
-            </GridContainer>
-        </div>
+                                            id="choose-gearbox"
+                                            items={gearboxes}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${gearbox}`
+                                            }}
+                                        />
+                                    </GridItem>
+                                    <GridItem xs={6} sm={6} md={4}>
+                                        <SelectInput labelText="Fuel"
+                                            handleChange={(val: string) => {
+                                                setFuel(val)
+                                            }}
+                                            // value={fuel}
+                                            id="choose-fuel-type"
+                                            items={fuelTypes}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${fuel}`
+                                            }} />
+                                    </GridItem>
+                                    <GridItem xs={6} sm={6} md={4}>
+                                        <CustomInputText handleChange={(val) => {
+                                            setEngineCapacity(val);
+                                        }}
+                                            labelText="Engine Capacity"
+                                            id="engine-capacity"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${engineCapacity}`,
+                                                type: 'number',
+                                            }}
+                                        />
+                                    </GridItem>
+                                </GridContainer>
+                                <GridContainer>
+                                    <GridItem xs={3} sm={3} md={4}>
+                                        <SelectInput labelText="Color"
+                                            handleChange={(val: string) => {
+                                                setColor(val)
+                                            }}
+                                            id="choose-color"
+                                            items={listColors}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${color}`
+                                            }} />
+                                    </GridItem>
+                                    <GridItem xs={3} sm={3} md={4}>
+                                        <SelectInput labelText="Interior Color"
+                                            handleChange={(val: string) => {
+                                                setInteriorColor(val)
+                                            }}
+                                            id="choose-interior-color"
+                                            items={listColors}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${interiorColor}`
+                                            }}
+                                        />
+                                    </GridItem>
+                                    <GridItem xs={3} sm={3} md={4}>
+                                        <SelectInput labelText="Cylinders"
+                                            handleChange={(val: string) => {
+                                                setCylinders(val)
+                                            }}
+                                            id="choose-car-cylinders"
+                                            value={cylinders}
+                                            items={carCylinderHeads}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }} />
+                                    </GridItem>
+                                </GridContainer>
+                                <GridContainer>
+                                    <GridItem xs={6} sm={6} md={6}>
+                                        <SelectInput labelText="Year"
+                                            handleChange={(val: string) => {
+                                                setYear(val)
+                                            }}
+                                            value={year}
+                                            id="year"
+                                            items={listYears}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${year}`
+                                            }} />
+                                    </GridItem>
+                                    <GridItem xs={6} sm={6} md={6}>
+                                        <CustomInputText
+                                            handleChange={(val) => {
+                                                setPlateNumber(val)
+                                            }}
+                                            labelText="Licence Plate"
+                                            id="Licence-Plate"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                value: `${plateNumber}`
+                                            }} />
+                                    </GridItem>
+                                </GridContainer>
+                            </GridItem>
+                            <GridItem xs={12} sm={12} md={4}>
+                                <AttackPhoto handleChangePhoto={(file) => {
+                                    setImage(file)
+                                }} />
+                                {/* <Dropzone /> */}
+                            </GridItem>
+                        </GridContainer>
+                    </CardBody>
+                    <CardFooter>
+                        {/* <Button color="primary" onClick={handleSaveCar}>Save</Button> */}
+                        <TSButton color="primary" onClick={handleSaveCar} disabled={store.vehicles.isLoading}>
+                            {store.vehicles.isLoading && <CircularProgressIndicator size={20} color='secondary' className={classes.progress} />}
+                            <p style={{ margin: '2px' }}>Save</p>
+                        </TSButton>
+                        <ToastComponent />
+                    </CardFooter>
+                </Card>
+            </GridItem>
+        </GridContainer>
+
     );
 }
 

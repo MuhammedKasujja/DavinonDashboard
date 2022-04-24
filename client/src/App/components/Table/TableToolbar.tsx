@@ -264,14 +264,14 @@ export function TableToolbar<T extends object>({
           variant='right'
         />}
 
-        {hideableColumns.length > 1 && (
+        {/* {hideableColumns.length > 1 && (
           <SmallIconActionButton<T>
             icon={<ViewColumnsIcon />}
             onClick={handleColumnsClick}
             label='Show / hide columns'
             variant='right'
           />
-        )}
+        )} */}
         <SmallIconActionButton<T>
           icon={<FilterListIcon />}
           onClick={handleFilterClick}

@@ -3,9 +3,7 @@ import { createStyles, makeStyles, StyleRules } from "@material-ui/core/styles";
 // core components
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
-import Button from "../../components/CustomButtons/Button";
 import Card from "../../components/Card/Card";
-import CardHeader from "../../components/Card/CardHeader";
 import CardBody from "../../components/Card/CardBody";
 import CardFooter from "../../components/Card/CardFooter";
 import GenderInput from "../../components/CustomInput/GenderInput";
@@ -18,6 +16,7 @@ import CustomInputText from "App/components/CustomInput/input";
 import { Driver } from "_store/driver/types";
 import { DriverRating, DriverState } from "_types/Enums";
 import DatepickerInput from "App/components/CustomInput/DatepickerInput";
+import { Typography } from "@material-ui/core";
 
 const styles: StyleRules = {
     cardCategoryWhite: {
@@ -67,7 +66,7 @@ const DriverRegisterComponent: React.FC<any> = () => {
             url: 'http://www.example.com/12345678/photo.png'
         },
         createdOn: Date.now(),
-        isOnline: true,
+        isOnline: false,
         available: false
     };
 
@@ -91,12 +90,15 @@ const DriverRegisterComponent: React.FC<any> = () => {
     return (
         <div>
             <GridContainer>
-                <GridItem xs={12} sm={12} md={7}>
+                <GridItem xs={12} sm={12} md={12}>
+                    <Typography>Driver Details</Typography>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={12}>
                     <Card>
-                        <CardHeader color="primary">
+                        {/* <CardHeader color="primary">
                             <h4 className={classes.cardTitleWhite}>Register Driver</h4>
                             <p className={classes.cardCategoryWhite}>Insert driver info</p>
-                        </CardHeader>
+                        </CardHeader> */}
                         <CardBody>
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={6}>
@@ -127,9 +129,6 @@ const DriverRegisterComponent: React.FC<any> = () => {
                                         }}
                                     />
                                 </GridItem>
-
-                            </GridContainer>
-                            <GridContainer>
                                 <GridItem xs={12} sm={12} md={4}>
                                     <PhoneInput onChange={(val: string) => {
                                         console.log(val)
@@ -171,8 +170,6 @@ const DriverRegisterComponent: React.FC<any> = () => {
                                         }}
                                     />
                                 </GridItem>
-                            </GridContainer>
-                            <GridContainer>
 
                                 <GridItem xs={12} sm={12} md={4}>
                                     <GenderInput onGenderChanged={(val: string) => {
@@ -203,11 +200,13 @@ const DriverRegisterComponent: React.FC<any> = () => {
                             </GridContainer>
                         </CardBody>
                         <CardFooter>
-                            <Button color="primary">Save</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={12}>
+                    <Typography>Vehicle Information</Typography>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={12}>
                     <RegisterCar driver={getDriver} />
                 </GridItem>
             </GridContainer>

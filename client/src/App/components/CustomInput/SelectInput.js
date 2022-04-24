@@ -1,15 +1,17 @@
-import React from "react";
+import React, { Fragment } from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import Typography from "@material-ui/core/Typography"
 // @material-ui/icons
 import Clear from "@material-ui/icons/Clear";
 import Check from "@material-ui/icons/Check";
 // core components
 import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle";
 import Select from '@material-ui/core/Select';
+
 
 const useStyles = makeStyles(styles);
 
@@ -41,35 +43,37 @@ export default function SelectInput(props) {
         [classes.marginTop]: labelText === undefined
     });
     return (
-        <FormControl
-            {...formControlProps}
-            className={formControlProps.className + " " + classes.formControl}
-        >
-            {labelText !== undefined ? (
-                <InputLabel
-                    className={classes.labelRoot + labelClasses}
-                    htmlFor={id}
-                    {...labelProps}
-                >
-                    {labelText}
-                </InputLabel>
-            ) : null}
-            <Select
-                classes={{
-                    root: marginTop,
-                    disabled: classes.disabled
-                }}
-                labelId={id}
-                id={id}
-                value={value}
-                onChange={(e) => handleChange(e.target.value)}
-                {...inputProps}
-            >{items}</Select>
-            {error ? (
-                <Clear className={classes.feedback + " " + classes.labelRootError} />
-            ) : success ? (
-                <Check className={classes.feedback + " " + classes.labelRootSuccess} />
-            ) : null}
-        </FormControl>
+        <Fragment>
+            <FormControl
+                {...formControlProps}
+                className={formControlProps.className + " " + classes.formControl}
+            >
+                {labelText !== undefined ? (
+                    <InputLabel
+                        className={classes.labelRoot + labelClasses}
+                        htmlFor={id}
+                        {...labelProps}
+                    >
+                        {labelText}
+                    </InputLabel>
+                ) : null}
+                <Select
+                    classes={{
+                        root: marginTop,
+                        disabled: classes.disabled
+                    }}
+                    labelId={id}
+                    id={id}
+                    value={value}
+                    onChange={(e) => handleChange(e.target.value)}
+                    {...inputProps}
+                >{items}</Select>
+                {error ? (
+                    <Clear className={classes.feedback + " " + classes.labelRootError} />
+                ) : success ? (
+                    <Check className={classes.feedback + " " + classes.labelRootSuccess} />
+                ) : null}
+            </FormControl>
+        </Fragment>
     );
 }
